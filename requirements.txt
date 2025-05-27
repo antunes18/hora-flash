@@ -1,4 +1,12 @@
-Flask>=2.2
-pywhatkit>=5.4
-twilio>=8.0
-pytest>=7.0
+bcrypt
+dotenv
+fastapi
+Jinja2
+passlib
+pydantic
+PyJWT
+pytest
+python-dotenv
+requests
+SQLAlchemy
+uvicorn
