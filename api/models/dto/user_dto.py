@@ -11,6 +11,7 @@ class UserCreateDTO(BaseModel):
 class UserResponseDTO(BaseModel):
     username: str
     email: str
+    access_token: str = ""
 
 
 class UserLoginDTO(BaseModel):
