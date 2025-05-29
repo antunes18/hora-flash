@@ -14,8 +14,8 @@ router = APIRouter(prefix="/whats", tags=["Whatsapp"])
     "/sendMessage",
     response_model=Message,
     responses={
-        201: {"model": Message, "description": "Messagem Enviada"},
-        400: {"model": Message, "description": "Não foi possivel enviar a message"},
+        201: {"model": Message, "description": "Messagem Enviada!!!"},
+        400: {"model": Message, "description": "Não foi possivel enviar a mensagem"},
         404: {"model": Message, "description": "Número ou Instancia não encotrada"},
         500: {
             "model": Message,
@@ -34,7 +34,19 @@ def send_message(number: str, text: str):
     return JSONResponse(status_code=201, content="Message Enviada")
 
 
-@router.post("/send_audio")
+@router.post(
+    "/send_audio",
+    response_model=Message,
+    responses={
+        201: {"model": Message, "description": "Audio Enviado!!!"},
+        400: {"model": Message, "description": "Não foi possivel enviar o Audio"},
+        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        500: {
+            "model": Message,
+            "description": "Problema com o Acesso ao API do Whatsapp",
+        },
+    },
+)
 def send_audio(number: str, audio_url: str):
     response = methods.send_audio(number, audio_url)
 
@@ -46,7 +58,19 @@ def send_audio(number: str, audio_url: str):
     return JSONResponse(status_code=201, content="Audio Enviado")
 
 
-@router.post("/send_status")
+@router.post(
+    "/send_status",
+    response_model=Message,
+    responses={
+        201: {"model": Message, "description": "Status Enviado com Sucesso!!!"},
+        400: {"model": Message, "description": "Não foi possivel enviar o Status"},
+        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        500: {
+            "model": Message,
+            "description": "Problema com o Acesso ao API do Whatsapp",
+        },
+    },
+)
 def send_status(
     content: str,
     type: ContentTypeEnum = Query(default=ContentTypeEnum.text),
@@ -61,7 +85,19 @@ def send_status(
     return JSONResponse(status_code=201, content="Status Enviado")
 
 
-@router.post("/send_sticker")
+@router.post(
+    "/send_sticker",
+    response_model=Message,
+    responses={
+        201: {"model": Message, "description": "Sticker Enviada!!!"},
+        400: {"model": Message, "description": "Não foi possivel enviar o Sticker"},
+        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        500: {
+            "model": Message,
+            "description": "Problema com o Acesso ao API do Whatsapp",
+        },
+    },
+)
 def send_sticker(number: str, image_url: str):
     response = methods.send_sticker(number, image_url)
 
