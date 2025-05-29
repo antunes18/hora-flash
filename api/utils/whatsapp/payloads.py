@@ -53,7 +53,7 @@ payload_send_status = dict(payload_default)
 payload_send_status.update(
     {
         "type": "image",
-        "content": "https://s2-techtudo.glbimg.com/Yy8GvFtkaN6KNguiLm-dkTbLnWg=/0x0:1280x720/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2021/C/h/u09RKXTxAUwTFATXhElA/the-russo-bros-directed-fortnite-season-6s-cinematic-and-killed-peely-again-feature.jpg",
+        "content": "",
         "caption": "",
         "backgroudColor": "",
         "font": 5,
@@ -73,6 +73,20 @@ payload_audio.update({"audio": ""})
 
 payload_sticker = dict(payload_default)
 # payload_sticker.update({"image": ""})
+
+
+### SEND LOCATION
+
+payload_location = dict(payload_default)
+payload_location.update(
+    {
+        "number": "",
+        "name": "",
+        "address": "",
+        "latitude": -16.505538233564373,
+        "longitude": -151.7422770494996,
+    }
+)
 
 
 ### FAKE CALL
