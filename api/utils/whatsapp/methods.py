@@ -112,4 +112,3 @@ if __name__ == "__main__":
     # send_status("https://s2-techtudo.glbimg.com/Yy8GvFtkaN6KNguiLm-dkTbLnWg=/0x0:1280x720/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2021/C/h/u09RKXTxAUwTFATXhElA/the-russo-bros-directed-fortnite-season-6s-cinematic-and-killed-peely-again-feature.jpg","Red","image")
     # send_audio("00 0000 0000"", "https://www.myinstants.com/media/sounds/inutilismo-mas-que-merda.mp3",)
     # send_sticker("00 0000 0000", "https://m.media-amazon.com/images/I/61nWmtoLUcL._SY466_.jpg")
-    # send_location("556292825944", "Teste", -16.505538233564373, -151.7422770494996)

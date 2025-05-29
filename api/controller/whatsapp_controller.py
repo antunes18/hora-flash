@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Query, responses, status
 from api.models.enums.type import ContentTypeEnum
 
 
-router = APIRouter(prefix="/whats")
+router = APIRouter(prefix="/whats", tags=["Whatsapp"])
 
 
 @router.post(
@@ -22,7 +22,6 @@ router = APIRouter(prefix="/whats")
             "description": "Problema com o Acesso ao API do Whatsapp",
         },
     },
-    tags=["Whatsapp"],
 )
 def send_message(number: str, text: str):
     response = methods.send_message(number, text)
