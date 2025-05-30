@@ -8,3 +8,4 @@ class Scheduling(Base):
     hour = Column(Integer, nullable=False)
     date = Column(DateTime, nullable=False)
     name = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
