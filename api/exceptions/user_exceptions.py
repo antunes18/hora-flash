@@ -1,4 +1,10 @@
 from fastapi import HTTPException
+from pydantic import BaseModel
+
+
+class GernericError(BaseModel):
+    message: str
+    status_code: int
 
 
 class UserInvalidData(HTTPException):
@@ -11,6 +17,6 @@ class UserNotFound(HTTPException):
         super().__init__(status_code=404, detail=detail)
 
 
-class UserAlereadyExist(HTTPException):
+class UserAlreadyExist(HTTPException):
     def __init__(self, detail: str = "Usuário com esse Email já existe!"):
         super().__init__(status_code=404, detail=detail)

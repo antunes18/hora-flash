@@ -1,8 +1,12 @@
 from sqlalchemy import create_engine, engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import os
+from dotenv import load_dotenv
 
-SQL_ALCHEMY_DATABASE_URL = "sqlite:///./hora_flash.db"
+load_dotenv()
+
+SQL_ALCHEMY_DATABASE_URL = os.getenv("DB_URL")
 
 
 engine = create_engine(
