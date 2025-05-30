@@ -1,11 +1,12 @@
+from fastapi.exceptions import ResponseValidationError
 from api.core.jwt_bearer import JwtBearer
 from fastapi import APIRouter, Depends, HTTPException, responses, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, exc
 from api.services import auth_services as services
-from api.core import auth
 from api.core.database import get_db
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
-from api.execptions.message import Message
+from api.execptions.message import GernericError
+from api.execptions import user_exceptions
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -19,15 +20,19 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
             "model": UserResponseDTO,
             "description": "Usuário foi Criado com Sucesso!",
         },
-        400: {"model": Message, "description": "Usuário Já Existente com esses dados!"},
-        422: {"model": Message, "description": "Dados Invalidos!"},
+        400: {
+            "model": GernericError,
+            "description": "Usuário Já Existente com esses dados!",
+        },
+        422: {"model": GernericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
     try:
         return services.register_user(request, db)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    except user_exceptions.UserAlreadyExist:
+        raise user_exceptions.UserAlreadyExist(email=request.email)
 
 
 @router.post(
@@ -38,8 +43,12 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
             "model": UserResponseDTO,
             "description": "Login Realizado!",
         },
-        403: {"model": Message, "description": "Email ou Senha Inválidos!"},
-        422: {"model": Message, "description": "Dados Invalidos!"},
+        403: {"model": GernericError, "description": "Email ou Senha Inválidos!"},
+        404: {
+            "model": GernericError,
+            "description": "Usuário Não Encontrado",
+        },
+        422: {"model": GernericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
