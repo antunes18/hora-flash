@@ -8,6 +8,7 @@ from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
 from api.execptions.message import GernericError
 from api.execptions import user_exceptions
 
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
@@ -60,4 +61,10 @@ def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
 
 @router.get("/teste", dependencies=[Depends(JwtBearer())])
 def teste():
-    return {"result": "Yes"}
+    try:
+        return {"data": "OK"}
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"ERROR: {e}"
+        )

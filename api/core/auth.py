@@ -10,7 +10,7 @@ load_dotenv()
 
 
 JWT_SECRET = os.getenv("JWT_SECRET")
-JWT_ALGORITHM = "HS256"
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,7 +23,7 @@ def token_response(token: str) -> dict:
 def sign(email: str) -> dict:
     payload = {"email": email, "exp": time() + 3600}
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return token_response(token=token)
+    return {"username": username, "email": email, "access_token": token}
 
 
 def decode(token: str):

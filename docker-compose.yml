@@ -1,0 +1,14 @@
+services:
+  api:
+    container_name: collector
+    build:
+      context: .
+
+    #image: zander404/hora_flash:latest
+    env_file:
+      - ./.env
+
+    ports:
+      - 8000:8000
+        
+

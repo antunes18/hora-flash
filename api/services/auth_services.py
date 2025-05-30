@@ -1,16 +1,18 @@
+from typing import ValuesView
 from api.core import auth
 from sqlalchemy.orm import Session
 from api.execptions import user_exceptions
 from api.models.dto.user_dto import UserCreateDTO
 from api.repository import user_repository as repository
 from api.models.user import User
-from api.models.dto.user_dto import UserLoginDTO
+from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO
 
 
 def register_user(user: UserCreateDTO, db: Session):
     existing = repository.get_user_by_email(db, user.email)
     if existing:
         raise user_exceptions.UserNotFound()
+
     user = User(
         username=user.username,
         email=user.email,
