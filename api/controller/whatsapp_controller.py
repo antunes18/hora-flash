@@ -1,9 +1,7 @@
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from api.core.database import Base
 from api.execptions.message import Message
 from api.utils.whatsapp import methods
-from fastapi import APIRouter, HTTPException, Query, responses, status
+from fastapi import APIRouter, HTTPException, Query
 from api.models.enums.type import ContentTypeEnum
 
 
@@ -32,6 +30,33 @@ def send_message(number: str, text: str):
         )
 
     return JSONResponse(status_code=201, content="Message Enviada")
+
+
+@router.post(
+    "/sendMedia",
+    response_model=Message,
+    responses={
+        201: {"model": Message, "description": "Media Enviada!!!"},
+        400: {"model": Message, "description": "Não foi possivel Enviar a Media"},
+        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        500: {
+            "model": Message,
+            "description": "Problema com o Acesso ao API do Whatsapp",
+        },
+    },
+)
+def send_media(
+    number: str,
+    media_url: str,
+    caption: str,
+):
+    response = methods.send_media(number, media_url=media_url, caption=caption)
+    if response.status_code != 201:
+        raise HTTPException(
+            status_code=response.status_code, detail="Falha ao enviar Media"
+        )
+
+    return JSONResponse(status_code=201, content="Media Enviado!")
 
 
 @router.post(

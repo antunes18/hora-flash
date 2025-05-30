@@ -30,15 +30,24 @@ def send_message(number: str, text: str):
     return requests.post(url_send_plain_text, json=payload, headers=headers)
 
 
-def send_image(number: str, image_url: str, caption: str):
+def send_media(number: str, media_url: str, caption: str):
+    mediatype: str = "image"
+
     if not number:
         raise ValueError("Number Not Informed!!!")
+
+    if media_url.endswith(".mp3"):
+        mediatype = "audio"
+
+    if media_url.endswith(".mp4"):
+        mediatype = "video"
 
     payload = dict(payloads.payload_media)
     payload.update({"number": number})
     payload.update(
         {
-            "media": image_url,
+            "mediatype": mediatype,
+            "media": media_url,
             "caption": caption,
         }
     )
