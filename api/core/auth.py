@@ -16,8 +16,12 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-def sign(username: str, email: str) -> dict:
-    payload = {"username": username, "email": email, "exp": time() + 3600}
+def token_response(token: str) -> dict:
+    return {"token": token}
+
+
+def sign(email: str) -> dict:
+    payload = {"email": email, "exp": time() + 3600}
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return {"username": username, "email": email, "access_token": token}
 

@@ -1,4 +1,6 @@
+from fastapi import Query
 from pydantic import BaseModel, EmailStr, Field
+from api.models.enums.roles import Roles
 
 
 class UserCreateDTO(BaseModel):
@@ -6,12 +8,14 @@ class UserCreateDTO(BaseModel):
     email: str = Field(min_length=10, max_length=250)
     password: str = Field(min_length=8, max_length=128)
     confirm_password: str = Field(min_length=8, max_length=128)
+    role: Roles = Query(default=Roles.user)
 
 
 class UserResponseDTO(BaseModel):
     username: str
     email: str
-    access_token: str = ""
+    role: str
+    token: str = None
 
 
 class UserLoginDTO(BaseModel):
