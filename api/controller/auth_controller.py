@@ -7,7 +7,6 @@ from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
 from api.exceptions.message import GenericError
 from api.exceptions import user_exceptions
 
-
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
@@ -37,7 +36,7 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
 
 @router.post(
     "/signin",
-    response_model=UserLoginDTO,
+    response_model=UserResponseDTO,
     responses={
         201: {
             "model": UserResponseDTO,

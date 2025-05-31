@@ -20,10 +20,10 @@ def token_response(token: str) -> dict:
     return {"token": token}
 
 
-def sign(email: str) -> dict:
-    payload = {"email": email, "exp": time() + 3600}
+def sign(email: str, username: str) -> str:
+    payload = {"email": email, "username": username, "exp": time() + 3600}
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return {"username": username, "email": email, "access_token": token}
+    return token
 
 
 def decode(token: str):
