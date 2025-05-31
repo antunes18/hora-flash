@@ -13,7 +13,7 @@ from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO
 def register_user(user: UserCreateDTO, db: Session):
     existing = repository.get_user_by_email(db, user.email)
     if existing:
-        raise user_exceptions.UserNotFound()
+        raise user_exceptions.UserAlreadyExist()
 
     user = User(
         username=user.username,

@@ -19,7 +19,7 @@ class UserNotFound(HTTPException):
 
 class UserAlreadyExist(HTTPException):
     def __init__(self, detail: str = "Usuário com esse Email já existe!"):
-        super().__init__(status_code=404, detail=detail)
+        super().__init__(status_code=401, detail=detail)
 
 
 class UserPasswordNotFind(HTTPException):
