@@ -19,3 +19,38 @@ def create_scheduling(dto: scheduling_dto, db: Session):
         phone=dto.phone,
     )
     return repository.create(db=db, scheduling=scheduling)
+
+
+def get_all_schedulings(db: Session):
+    return repository.find_all(db=db)
+
+def get_scheduling(db: Session, scheduling_id: int):
+    scheduling = repository.find_one_scheduling(db, scheduling_id)
+
+    if scheduling:
+        return scheduling
+    else:
+        return {"message": "book does not exists"}
+
+def delete_scheduling(db: Session, scheduling_id: int):
+    scheduling = repository.delete_scheduling(db, scheduling_id)
+
+    if scheduling:
+        return {"message": "book deleted"}
+    else:
+        return {"message": "book does not exists"}
+
+def restore_scheduling(db: Session, scheduling_id: int):
+    scheduling = repository.restore_scheduling(db, scheduling_id)
+
+    if scheduling:
+        return {"message": "book restored"}
+    else:
+        return {"message": "book does not exists"}
+
+def update_scheduling(db: Session, scheduling_id: int, scheduling: Scheduling):
+    scheduling = repository.update_scheduling(db, scheduling_id, scheduling)
+    if scheduling:
+        return repository.update_scheduling(db, scheduling_id, scheduling)
+    else:
+        return {"message": "book does not exists"}
