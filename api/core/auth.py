@@ -17,13 +17,13 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def token_response(token: str) -> dict:
-    return {"access_token": token}
+    return {"token": token}
 
 
 def sign(email: str) -> dict:
     payload = {"email": email, "exp": time() + 3600}
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return token_response(token=token)
+    return {"username": username, "email": email, "access_token": token}
 
 
 def decode(token: str):
