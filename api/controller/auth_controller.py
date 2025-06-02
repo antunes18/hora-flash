@@ -1,12 +1,11 @@
-from api import models
 from api.core.jwt_bearer import JwtBearer
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from api.exceptions.user_exceptions import GernericError
 from api.services import auth_services as services
 from api.core.database import get_db
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
-from api.exceptions.message import GenericError
+from api.execptions.message import GenericError
+
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -25,7 +24,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
             "description": "Usuário Já Existente com esses dados!",
         },
         401: {
-            "model": GernericError,
+            "model": GenericError,
             "description": "Usuário com esse Email já Existe!",
         },
         422: {"model": GenericError, "description": "Dados Invalidos!"},

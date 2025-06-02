@@ -1,5 +1,5 @@
 from fastapi.responses import JSONResponse
-from api.exceptions.message import GenericError
+from api.execptions.message import GenericError
 from api.utils.whatsapp import methods
 from fastapi import APIRouter, HTTPException, Query
 from api.models.enums.type import ContentTypeEnum
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/whats", tags=["Whatsapp"])
     "/sendMessage",
     response_model=GenericError,
     responses={
-        201: {"model": GenericError, "description": "Messagem Enviada!!!"},
+        201: {"model": GenericError, "description": "Mensagem Enviada!!!"},
         400: {
             "model": GenericError,
             "description": "Não foi possivel enviar a mensagem",
