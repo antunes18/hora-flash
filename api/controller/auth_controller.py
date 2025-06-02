@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, exc
 from api.services import auth_services as services
 from api.core.database import get_db
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
-from api.execptions.message import GernericError
+from api.execptions.message import GenericError
 from api.execptions import user_exceptions
 
 
@@ -22,10 +22,10 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
             "description": "Usuário foi Criado com Sucesso!",
         },
         400: {
-            "model": GernericError,
+            "model": GenericError,
             "description": "Usuário Já Existente com esses dados!",
         },
-        422: {"model": GernericError, "description": "Dados Invalidos!"},
+        422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
@@ -44,12 +44,12 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
             "model": UserResponseDTO,
             "description": "Login Realizado!",
         },
-        403: {"model": GernericError, "description": "Email ou Senha Inválidos!"},
+        403: {"model": GenericError, "description": "Email ou Senha Inválidos!"},
         404: {
-            "model": GernericError,
+            "model": GenericError,
             "description": "Usuário Não Encontrado",
         },
-        422: {"model": GernericError, "description": "Dados Invalidos!"},
+        422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
