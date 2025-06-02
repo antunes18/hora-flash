@@ -1,12 +1,10 @@
-from fastapi.exceptions import ResponseValidationError
 from api.core.jwt_bearer import JwtBearer
-from fastapi import APIRouter, Depends, HTTPException, responses, status
-from sqlalchemy.orm import Session, exc
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 from api.services import auth_services as services
 from api.core.database import get_db
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
 from api.execptions.message import GenericError
-from api.execptions import user_exceptions
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -25,15 +23,15 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
             "model": GenericError,
             "description": "Usuário Já Existente com esses dados!",
         },
+        401: {
+            "model": GenericError,
+            "description": "Usuário com esse Email já Existe!",
+        },
         422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
-    try:
-        return services.register_user(request, db)
-
-    except user_exceptions.UserAlreadyExist:
-        raise user_exceptions.UserAlreadyExist(email=request.email)
+    return services.register_user(request, db)
 
 
 @router.post(
@@ -53,18 +51,9 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
     },
 )
 def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
-    try:
-        return services.login(request, db)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return services.login(request, db)
 
 
 @router.get("/teste", dependencies=[Depends(JwtBearer())])
 def teste():
-    try:
-        return {"data": "OK"}
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"ERROR: {e}"
-        )
+    return {"data": "OK"}

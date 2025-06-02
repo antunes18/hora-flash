@@ -1,11 +1,12 @@
-
 from fastapi import FastAPI
 from api.controller import auth_controller, whatsapp_controller, scheduling_controller
-from api.core.database import Base, engine
-
+from api.core.middleware import LogMiddleware
 
 app = FastAPI()
-Base.metadata.create_all(bind=engine)
+
+
+app.add_middleware(LogMiddleware)
+
 app.include_router(auth_controller.router)
 app.include_router(scheduling_controller.router)
 app.include_router(whatsapp_controller.router)
