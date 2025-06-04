@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from api.services import auth_services as services
 from api.core.database import get_db
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
-from api.execptions.message import GenericError
+from api.exceptions.message import GenericError
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])

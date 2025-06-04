@@ -1,5 +1,5 @@
 from fastapi.responses import JSONResponse
-from api.execptions.message import GenericError
+from api.exceptions.message import GenericError
 from api.utils.whatsapp import methods
 from fastapi import APIRouter, HTTPException, Query
 from api.models.enums.type import ContentTypeEnum
