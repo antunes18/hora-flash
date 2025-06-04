@@ -1,3 +1,4 @@
+from api.core.auth import Token
 from api.core.jwt_bearer import JwtBearer
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -36,7 +37,7 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
 
 @router.post(
     "/signin",
-    response_model=UserResponseDTO,
+    response_model=Token,
     responses={
         201: {
             "model": UserResponseDTO,
