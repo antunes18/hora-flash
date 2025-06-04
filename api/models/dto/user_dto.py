@@ -17,10 +17,20 @@ class UserCreateDTO(BaseModel):
         from_attributes = True
 
 
+class UserUpdateDTO(BaseModel):
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=8, max_length=128)
+    confirm_password: str = Field(min_length=8, max_length=128)
+
+    class Config:
+        from_attributes = True
+
+
 class UserResponseDTO(BaseModel):
     username: str
     email: str
     role: str
+    disabled: bool
     access_token: str = None
 
     class Config:
