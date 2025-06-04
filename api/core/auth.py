@@ -1,18 +1,11 @@
-from datetime import timedelta
-import datetime
-import re
 import jwt
-from time import time, timezone
-from datetime import datetime
+from time import time
 from pydantic import BaseModel
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt.exceptions import InvalidTokenError
 from dotenv import load_dotenv
 import os
 from passlib.context import CryptContext
 
 from api.models.dto.user_dto import UserResponseDTO
-
 
 load_dotenv()
 
