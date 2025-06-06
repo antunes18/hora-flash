@@ -1,16 +1,22 @@
 import jwt
 from time import time
-
+from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 from passlib.context import CryptContext
 
+from api.models.dto.user_dto import UserResponseDTO
 
 load_dotenv()
 
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("TOKEN_EXPIRE")
+
+
+class Token(BaseModel):
+    access_token: str
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -20,10 +26,15 @@ def token_response(token: str) -> dict:
     return {"token": token}
 
 
-def sign(email: str) -> dict:
-    payload = {"email": email, "exp": time() + 3600}
+def sign(user_data: UserResponseDTO) -> str:
+    payload = {
+        "email": user_data.email,
+        "username": user_data.username,
+        "role": user_data.role,
+        "exp": time() + 3600,
+    }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return {"username": username, "email": email, "access_token": token}
+    return token
 
 
 def decode(token: str):

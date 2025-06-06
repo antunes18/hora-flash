@@ -1,13 +1,18 @@
-from fastapi.exceptions import ResponseValidationError
+from api.core.auth import Token
 from api.core.jwt_bearer import JwtBearer
-from fastapi import APIRouter, Depends, HTTPException, responses, status
-from sqlalchemy.orm import Session, exc
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 from api.services import auth_services as services
 from api.core.database import get_db
-from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
-from api.execptions.message import GernericError
-from api.execptions import user_exceptions
-
+from api.models.user import User
+from api.models.dto.user_dto import (
+    UserCreateDTO,
+    UserLoginDTO,
+    UserResponseDTO,
+    UserUpdateDTO,
+)
+from api.exceptions.message import GenericError
+from typing import List
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -22,49 +27,140 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
             "description": "Usuário foi Criado com Sucesso!",
         },
         400: {
-            "model": GernericError,
+            "model": GenericError,
             "description": "Usuário Já Existente com esses dados!",
         },
-        422: {"model": GernericError, "description": "Dados Invalidos!"},
+        401: {
+            "model": GenericError,
+            "description": "Usuário com esse Email já Existe!",
+        },
+        422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
-    try:
-        return services.register_user(request, db)
-
-    except user_exceptions.UserAlreadyExist:
-        raise user_exceptions.UserAlreadyExist(email=request.email)
+    return services.register_user(request, db)
 
 
 @router.post(
     "/signin",
-    response_model=UserResponseDTO,
+    response_model=Token,
     responses={
         201: {
             "model": UserResponseDTO,
             "description": "Login Realizado!",
         },
-        403: {"model": GernericError, "description": "Email ou Senha Inválidos!"},
+        403: {"model": GenericError, "description": "Email ou Senha Inválidos!"},
         404: {
-            "model": GernericError,
+            "model": GenericError,
             "description": "Usuário Não Encontrado",
         },
-        422: {"model": GernericError, "description": "Dados Invalidos!"},
+        422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
 def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
-    try:
-        return services.login(request, db)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return services.login(request, db)
+
+
+@router.get(
+    "/getAllUsers",
+    response_model=List[UserResponseDTO],
+    response_model_exclude_unset=True,
+    responses={
+        201: {
+            "model": List[UserResponseDTO],
+            "description": "Lista de Usuários",
+        },
+        400: {
+            "model": GenericError,
+            "description": "Nenhum Usuário Cadastrado",
+        },
+        500: {"model": GenericError, "description": "Error no Servidor"},
+    },
+)
+def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return services.get_all(skip, limit, db)
+
+
+@router.get(
+    "/getUser/{user_id}",
+    response_model=UserResponseDTO,
+    response_model_exclude_unset=True,
+    responses={
+        201: {
+            "model": UserResponseDTO,
+            "description": "Informações do Usuário",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Usuário Não Encontrado",
+        },
+        500: {"model": GenericError, "description": "Error no Servidor"},
+    },
+)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    return services.get_user(user_id, db)
+
+
+@router.put(
+    "/updateUser/{user_id}",
+    response_model=UserResponseDTO,
+    response_model_exclude_unset=True,
+    responses={
+        204: {
+            "description": "Dados Atualizados com Sucesso",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Usuário Não Encontrado",
+        },
+        500: {"model": GenericError, "description": "Error no Servidor"},
+    },
+)
+def update_user(
+    user_id: int, update_user_data: UserUpdateDTO, db: Session = Depends(get_db)
+):
+    return services.update_user(user_id, update_user_data, db)
+
+
+@router.delete(
+    "/deleteUser/{user_id}",
+    response_model=UserResponseDTO,
+    response_model_exclude_unset=True,
+    responses={
+        204: {
+            "description": "Usuário Deletado com sucesso!",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Usuário Não Encontrado!",
+        },
+        500: {"model": GenericError, "description": "Error no Servidor!"},
+    },
+)
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    return services.delete_user(user_id, db)
+
+
+@router.put(
+    "/restoreUser/{user_id}",
+    response_model=UserResponseDTO,
+    response_model_exclude_unset=True,
+    responses={
+        201: {
+            "model": UserResponseDTO,
+            "description": "Usuário Restaurado",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Usuário Não Encontrado",
+        },
+        500: {"model": GenericError, "description": "Error no Servidor"},
+    },
+)
+def restore_user(user_id: int, db: Session = Depends(get_db)):
+    return services.restore_user(user_id, db)
 
 
 @router.get("/teste", dependencies=[Depends(JwtBearer())])
 def teste():
-    try:
-        return {"data": "OK"}
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"ERROR: {e}"
-        )
+    return {"data": "OK"}

@@ -1,5 +1,5 @@
 from fastapi.responses import JSONResponse
-from api.execptions.message import Message
+from api.exceptions.message import GenericError
 from api.utils.whatsapp import methods
 from fastapi import APIRouter, HTTPException, Query
 from api.models.enums.type import ContentTypeEnum
@@ -10,13 +10,19 @@ router = APIRouter(prefix="/whats", tags=["Whatsapp"])
 
 @router.post(
     "/sendMessage",
-    response_model=Message,
+    response_model=GenericError,
     responses={
-        201: {"model": Message, "description": "Messagem Enviada!!!"},
-        400: {"model": Message, "description": "Não foi possivel enviar a mensagem"},
-        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        201: {"model": GenericError, "description": "Mensagem Enviada!!!"},
+        400: {
+            "model": GenericError,
+            "description": "Não foi possivel enviar a mensagem",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Número ou Instancia não encotrada",
+        },
         500: {
-            "model": Message,
+            "model": GenericError,
             "description": "Problema com o Acesso ao API do Whatsapp",
         },
     },
@@ -29,18 +35,21 @@ def send_message(number: str, text: str):
             status_code=response.status_code, detail="Falha ao enviar a mensagem"
         )
 
-    return JSONResponse(status_code=201, content="Message Enviada")
+    return JSONResponse(status_code=201, content="GenericError Enviada")
 
 
 @router.post(
     "/sendMedia",
-    response_model=Message,
+    response_model=GenericError,
     responses={
-        201: {"model": Message, "description": "Media Enviada!!!"},
-        400: {"model": Message, "description": "Não foi possivel Enviar a Media"},
-        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        201: {"model": GenericError, "description": "Media Enviada!!!"},
+        400: {"model": GenericError, "description": "Não foi possivel Enviar a Media"},
+        404: {
+            "model": GenericError,
+            "description": "Número ou Instancia não encotrada",
+        },
         500: {
-            "model": Message,
+            "model": GenericError,
             "description": "Problema com o Acesso ao API do Whatsapp",
         },
     },
@@ -61,13 +70,16 @@ def send_media(
 
 @router.post(
     "/send_audio",
-    response_model=Message,
+    response_model=GenericError,
     responses={
-        201: {"model": Message, "description": "Audio Enviado!!!"},
-        400: {"model": Message, "description": "Não foi possivel enviar o Audio"},
-        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        201: {"model": GenericError, "description": "Audio Enviado!!!"},
+        400: {"model": GenericError, "description": "Não foi possivel enviar o Audio"},
+        404: {
+            "model": GenericError,
+            "description": "Número ou Instancia não encotrada",
+        },
         500: {
-            "model": Message,
+            "model": GenericError,
             "description": "Problema com o Acesso ao API do Whatsapp",
         },
     },
@@ -85,13 +97,16 @@ def send_audio(number: str, audio_url: str):
 
 @router.post(
     "/send_status",
-    response_model=Message,
+    response_model=GenericError,
     responses={
-        201: {"model": Message, "description": "Status Enviado com Sucesso!!!"},
-        400: {"model": Message, "description": "Não foi possivel enviar o Status"},
-        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        201: {"model": GenericError, "description": "Status Enviado com Sucesso!!!"},
+        400: {"model": GenericError, "description": "Não foi possivel enviar o Status"},
+        404: {
+            "model": GenericError,
+            "description": "Número ou Instancia não encotrada",
+        },
         500: {
-            "model": Message,
+            "model": GenericError,
             "description": "Problema com o Acesso ao API do Whatsapp",
         },
     },
@@ -112,13 +127,19 @@ def send_status(
 
 @router.post(
     "/send_sticker",
-    response_model=Message,
+    response_model=GenericError,
     responses={
-        201: {"model": Message, "description": "Sticker Enviada!!!"},
-        400: {"model": Message, "description": "Não foi possivel enviar o Sticker"},
-        404: {"model": Message, "description": "Número ou Instancia não encotrada"},
+        201: {"model": GenericError, "description": "Sticker Enviada!!!"},
+        400: {
+            "model": GenericError,
+            "description": "Não foi possivel enviar o Sticker",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Número ou Instancia não encotrada",
+        },
         500: {
-            "model": Message,
+            "model": GenericError,
             "description": "Problema com o Acesso ao API do Whatsapp",
         },
     },
