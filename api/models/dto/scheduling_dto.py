@@ -5,6 +5,7 @@ class Scheduling(BaseModel):
     hour: int
     date: date
     name: str
+    user_id: int
     phone: str
 
     @field_validator("hour")

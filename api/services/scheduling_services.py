@@ -16,6 +16,7 @@ def create_scheduling(dto: scheduling_dto, db: Session):
         hour=dto.hour,
         date=dto.date,
         name=dto.name,
+        user_id=dto.user_id,
         phone=dto.phone,
     )
     return repository.create(db=db, scheduling=scheduling)
