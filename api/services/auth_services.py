@@ -9,7 +9,7 @@ from api.exceptions.user_exceptions import UserNotFound
 
 
 def register_user(user: UserCreateDTO, db: Session):
-    existing = repository.get_user_by_email(db, user.email)
+    existing = repository.get_user_by_email(user.email, db)
     if existing:
         raise user_exceptions.UserAlreadyExist()
 
@@ -20,11 +20,11 @@ def register_user(user: UserCreateDTO, db: Session):
         role=user.role,
         disabled=False,
     )
-    return repository.create_user(db, user)
+    return repository.create_user(user, db)
 
 
 def login(user_login: UserLoginDTO, db: Session) -> Token:
-    user_data: UserResponseDTO = repository.get_user_by_email(db, user_login.email)
+    user_data: UserResponseDTO = repository.get_user_by_email(user_login.email, db)
 
     if not user_data:
         raise user_exceptions.UserNotFound()

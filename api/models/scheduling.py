@@ -12,4 +12,4 @@ class Scheduling(Base):
     phone = Column(String, nullable=False)
     user_id = Column(ForeignKey("users.id"))
     user = relationship("User", back_populates="scheduling")
-    is_deleted = Column(Boolean, nullable=False, default=False)
+    is_deleted = Column(Boolean, default=False)
