@@ -26,6 +26,10 @@ def get_user_by_email(email: str, db: Session) -> User:
     return db.query(User).filter(User.email == email).first()
 
 
+def get_user_by_username(username: str, db: Session) -> User:
+    return db.query(User).filter(User.username == username).first()
+
+
 def update_user(db_user: User, user: User, db: Session) -> User:
     for key, value in user.dict(exclude_unset=True).items():
         setattr(db_user, key, value)

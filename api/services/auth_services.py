@@ -13,6 +13,9 @@ def register_user(user: UserCreateDTO, db: Session):
     if existing:
         raise user_exceptions.UserAlreadyExist()
 
+    if repository.get_user_by_username(user.username, db):
+        raise user_exceptions.UserInvalidUsername()
+
     user = User(
         username=user.username,
         email=user.email,
