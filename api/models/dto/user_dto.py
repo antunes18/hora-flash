@@ -1,14 +1,12 @@
-from dataclasses import dataclass
-from types import ClassMethodDescriptorType
 from fastapi import Query
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from api.models.enums.roles import Roles
-from api.models.user import User
 
 
 class UserCreateDTO(BaseModel):
     username: str = Field(min_length=3, max_length=50)
     email: str = Field(min_length=10, max_length=250)
+    number: str = Field(pattern=r"^\d{13,}$", min_length=13, max_length=13)
     password: str = Field(min_length=8, max_length=128)
     confirm_password: str = Field(min_length=8, max_length=128)
     role: Roles = Query(default=Roles.user)
@@ -29,6 +27,7 @@ class UserUpdateDTO(BaseModel):
 class UserResponseDTO(BaseModel):
     username: str
     email: str
+    number: int
     role: str
     disabled: bool
     access_token: str = None
@@ -38,8 +37,8 @@ class UserResponseDTO(BaseModel):
 
 
 class UserLoginDTO(BaseModel):
-    email: str
-    password: str
+    email: str = Field(min_length=10, max_length=250)
+    password: str = Field(min_length=8, max_length=128)
 
     class Config:
         from_attributes = True

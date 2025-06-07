@@ -19,6 +19,7 @@ def register_user(user: UserCreateDTO, db: Session):
     user = User(
         username=user.username,
         email=user.email,
+        number=user.number,
         password=auth.hash_password(user.password),
         role=user.role,
         disabled=False,

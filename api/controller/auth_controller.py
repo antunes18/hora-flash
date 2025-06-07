@@ -36,6 +36,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
         },
         422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
+    status_code=201,
 )
 def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
     return services.register_user(request, db)
@@ -56,6 +57,7 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
         },
         422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
+    status_code=201,
 )
 def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
     return services.login(request, db)
@@ -86,7 +88,7 @@ def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
     response_model=UserResponseDTO,
     response_model_exclude_unset=True,
     responses={
-        201: {
+        200: {
             "model": UserResponseDTO,
             "description": "Informações do Usuário",
         },
@@ -96,6 +98,7 @@ def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
         },
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
+    status_code=200,
 )
 def get_user(user_id: int, db: Session = Depends(get_db)):
     return services.get_user(user_id, db)
@@ -103,7 +106,6 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.put(
     "/updateUser/{user_id}",
-    response_model=UserResponseDTO,
     response_model_exclude_unset=True,
     responses={
         204: {
@@ -115,6 +117,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         },
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
+    status_code=204,
 )
 def update_user(
     user_id: int, update_user_data: UserUpdateDTO, db: Session = Depends(get_db)
@@ -124,7 +127,6 @@ def update_user(
 
 @router.delete(
     "/deleteUser/{user_id}",
-    response_model=UserResponseDTO,
     response_model_exclude_unset=True,
     responses={
         204: {
@@ -136,6 +138,7 @@ def update_user(
         },
         500: {"model": GenericError, "description": "Error no Servidor!"},
     },
+    status_code=204,
 )
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     return services.delete_user(user_id, db)
@@ -156,6 +159,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
         },
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
+    status_code=201,
 )
 def restore_user(user_id: int, db: Session = Depends(get_db)):
     return services.restore_user(user_id, db)
