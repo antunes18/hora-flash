@@ -22,8 +22,8 @@ def create_scheduling(dto: scheduling_dto, db: Session):
     return repository.create(db=db, scheduling=scheduling)
 
 
-def get_all_schedulings(db: Session):
-    return repository.find_all(db=db)
+def get_all_schedulings(skip: int, limit: int, db: Session):
+    return repository.find_all(skip, limit, db)
 
 def get_scheduling(db: Session, scheduling_id: int):
     scheduling = repository.find_one_scheduling(db, scheduling_id)

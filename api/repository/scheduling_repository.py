@@ -14,8 +14,8 @@ def create(db: Session, scheduling: Scheduling) -> Scheduling:
 def fing_scheduling_by_date_and_hour(db: Session, date: datetime.datetime, hour: int) -> Scheduling | None:
     return db.query(Scheduling).filter(Scheduling.date.startswith(date), Scheduling.hour == hour, Scheduling.is_deleted == False).first()
 
-def find_all(db: Session) -> list:
-    return db.query(Scheduling).all()
+def find_all(skip: int, limit: int, db: Session) -> list:
+    return db.query(Scheduling).filter(Scheduling.is_deleted == False).offset(skip).limit(limit).all()
 
 def find_one_scheduling(db: Session, id: int) -> Scheduling | None:
     return db.query(Scheduling).filter(Scheduling.id == id).first()
