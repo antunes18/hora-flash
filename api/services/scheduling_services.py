@@ -1,15 +1,22 @@
 from sqlalchemy.orm import Session
+
+from api.exceptions import scheduling_exceptions, user_exceptions
 from api.models.dto import scheduling_dto
 from api.models.scheduling import Scheduling
 from api.repository import scheduling_repository as repository
+from api.repository import user_repository as user_repository
 
 
 def create_scheduling(dto: scheduling_dto, db: Session):
 
     existing = repository.fing_scheduling_by_date_and_hour(db, dto.date, dto.hour)
+    user = user_repository.get_user(dto.user_id, db)
 
     if existing:
-         return {"message": "book already exists"}
+         raise scheduling_exceptions.AlreadyExist()
+
+    if not user:
+        raise user_exceptions.UserNotFound()
 
     print(existing)
     scheduling = Scheduling(
@@ -31,7 +38,7 @@ def get_scheduling(db: Session, scheduling_id: int):
     if scheduling:
         return scheduling
     else:
-        return {"message": "book does not exists"}
+        raise scheduling_exceptions.NotFound()
 
 def delete_scheduling(db: Session, scheduling_id: int):
     scheduling = repository.delete_scheduling(db, scheduling_id)
@@ -39,7 +46,7 @@ def delete_scheduling(db: Session, scheduling_id: int):
     if scheduling:
         return {"message": "book deleted"}
     else:
-        return {"message": "book does not exists"}
+        raise scheduling_exceptions.NotFound()
 
 def restore_scheduling(db: Session, scheduling_id: int):
     scheduling = repository.restore_scheduling(db, scheduling_id)
@@ -47,11 +54,12 @@ def restore_scheduling(db: Session, scheduling_id: int):
     if scheduling:
         return {"message": "book restored"}
     else:
-        return {"message": "book does not exists"}
+        raise scheduling_exceptions.NotFound()
+
 
 def update_scheduling(db: Session, scheduling_id: int, scheduling: Scheduling):
     scheduling = repository.update_scheduling(db, scheduling_id, scheduling)
     if scheduling:
         return repository.update_scheduling(db, scheduling_id, scheduling)
     else:
-        return {"message": "book does not exists"}
+        raise scheduling_exceptions.NotFound()

@@ -11,19 +11,13 @@ router = APIRouter(prefix="/book", tags=["book"])
 
 @router.post("/")
 def create_Scheduling(scheduling: Scheduling, db: Session = Depends(get_db)):
-    try:
-        return services.create_scheduling(scheduling, db)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return services.create_scheduling(scheduling, db)
+
 
 @router.get("/")
 def get_all_scheduling(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    try:
-        return services.get_all_schedulings(skip, limit, db)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return services.get_all_schedulings(skip, limit, db)
+
 
 @router.get("/{scheduling_id}")
 def get_one_scheduling(scheduling_id: int, db: Session = Depends(get_db)):

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 from api.core.database import Base
 
 class Scheduling(Base):
