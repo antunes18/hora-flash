@@ -28,11 +28,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
         },
         400: {
             "model": GenericError,
-            "description": "Usuário Já Existente com esses dados!",
-        },
-        401: {
-            "model": GenericError,
-            "description": "Usuário com esse Email já Existe!",
+            "description": "Usuário ou Email já existente com esses dados!",
         },
         422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
@@ -50,7 +46,7 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
             "model": UserResponseDTO,
             "description": "Login Realizado!",
         },
-        403: {"model": GenericError, "description": "Email ou Senha Inválidos!"},
+        400: {"model": GenericError, "description": "Email ou Senha Inválidos!"},
         404: {
             "model": GenericError,
             "description": "Usuário Não Encontrado",
