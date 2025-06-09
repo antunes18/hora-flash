@@ -17,7 +17,6 @@ class UserServices:
         existing = await self.user_repo.get_user_by_email(user.email)
         if existing:
             raise user_exceptions.UserAlreadyExist()
-
         user = User(
             username=user.username,
             email=user.email,
@@ -27,7 +26,7 @@ class UserServices:
         )
         return await self.user_repo.create_user(user)
 
-    def login(self, user_login: UserLoginDTO) -> Token:
+    async def login(self, user_login: UserLoginDTO) -> Token:
         user_data: UserResponseDTO = self.user_repo.get_user_by_email(user_login.email)
         if not user_data:
             raise user_exceptions.UserNotFound()
