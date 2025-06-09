@@ -26,7 +26,6 @@ jobs:
 
     - name: Run tests # Nível de indentação: 2 espaços após '-'
       env: # Nível de indentação: 6 espaços
-        DATABASE_URL: sqlite+aiosqlite:///:memory: # Certifique-se que o database.py lida com isso.
         PYTHONPATH: ${{ github.workspace }}
       run: python -m pytest -W ignore::DeprecationWarning # Nível de indentação: 6 espaços
-      # ^^^ LINHA 36 PODE ESTAR AQUI OU LOGO DEPOIS ^^^
+  
