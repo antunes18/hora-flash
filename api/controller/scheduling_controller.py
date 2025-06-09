@@ -15,6 +15,7 @@ router = APIRouter(prefix="/book", tags=["book"])
 @router.post("/",
     response_model = Scheduling,
     response_model_exclude_unset = True,
+    status_code=201,
     responses = {
         201: {
             "model": Scheduling,
