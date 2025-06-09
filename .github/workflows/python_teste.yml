@@ -1,11 +1,10 @@
-name: Docker Image CI
+name: Test FastAPI CI/CD
 
 on:
   push:
     branches: [ "dev" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -15,23 +14,41 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.13' # Use a versão do Python que seu projeto requer
-        cache: 'pip' # Habilita o cache de dependências do pip para builds mais rápidos
+        python-version: '3.13'
+        cache: 'pip'
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        # Assumindo que você tem um arquivo requirements.txt para as dependências do seu projeto e testes
-        # Se não tiver, você pode instalar apenas o pytest: pip install pytest
         pip install -r requirements.txt
-        # Instale quaisquer outras dependências necessárias para os testes, se não estiverem no requirements.txt
-        # Por exemplo, para pytest-asyncio que você mencionou: pip install pytest-asyncio
-        pip install pytest pytest-asyncio # Adicione outros que você usa, como 'anyio' se for o caso
+        pip install pytest pytest-asyncio anyio # Ensure anyio is also installed if it's a plugin
+
+    # --- Debugging Steps ---
+    - name: Show current directory and list files
+      run: |
+        pwd
+        ls -la
+        ls -la test/
+        ls -la test/mocks/
+        ls -la test/services/
+
+    - name: Print PYTHONPATH
+      run: echo "PYTHONPATH is: $PYTHONPATH"
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+
+    - name: Print Python sys.path (how Python sees its paths)
+      # This will show you exactly what Python considers its module search path
+      run: |
+        python -c "import sys; print(sys.path)"
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+    # --- End Debugging Steps ---
 
     - name: Run tests
-      # Este passo é crucial. Se 'pytest' retornar um código de saída diferente de zero (indicando falha),
-      # esta etapa falhará e o workflow será interrompido, impedindo o build e o push da imagem Docker.
       env:
-       PYTHONPATH: ${{ github.workspace }} # github.workspace é o diretório raiz do seu repositório
-      run: pytest -W ignore::DeprecationWarning  
-    # --- Fim da seção de testes adicionada ---
+        DATABASE_URL: sqlite+aiosqlite:///:memory:
+        PYTHONPATH: ${{ github.workspace }} # Ensure it's set here too
+      run: python -m pytest -W ignore::DeprecationWarning
+
+    # ... (Seus passos de Docker buildx, login, build/push) ...
