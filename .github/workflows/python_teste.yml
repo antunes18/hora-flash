@@ -15,7 +15,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # Use a versão do Python que seu projeto requer
+        python-version: '3.13' # Use a versão do Python que seu projeto requer
         cache: 'pip' # Habilita o cache de dependências do pip para builds mais rápidos
 
     - name: Install Python dependencies
@@ -31,5 +31,5 @@ jobs:
     - name: Run tests
       # Este passo é crucial. Se 'pytest' retornar um código de saída diferente de zero (indicando falha),
       # esta etapa falhará e o workflow será interrompido, impedindo o build e o push da imagem Docker.
-      run: pytest
+      run: pytest -W ignore::DeprecationWarning  
     # --- Fim da seção de testes adicionada ---
