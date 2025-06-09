@@ -9,6 +9,7 @@ from api.core.auth import Token
 from api.exceptions.user_exceptions import UserNotFound
 
 
+
 class UserServices:
     def __init__(self, user_repo: UserRepository) -> None:
         self.user_repo = user_repo
