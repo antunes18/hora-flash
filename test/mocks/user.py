@@ -34,8 +34,8 @@ def user_service_real_repo(user_repository: UserRepository):
 @pytest.fixture(scope="function")
 def test_user_create():
     return UserCreateDTO(
-        username="teste_user_create",
-        email="teste111@teste.com",
+        username="teste_de_user",
+        email="teste@teste.com",
         password="stringstri",
         confirm_password="stringstri",
         role=Roles.user,
@@ -47,10 +47,64 @@ def test_user_login():
     return UserLoginDTO(email="email@email.com", password="stringstri")
 
 
-mock_user_create = User(
-    username="teste_de_user",
-    email="teste@teste.com",
-    password="stringstri",
-    role="user",
-    disabled=False,
-)
+@pytest.fixture
+def mock_user():
+    return User(
+        username="teste_de_user",
+        email="teste@teste.com",
+        password="stringstri",
+        role="user",
+        disabled=False,
+    )
+
+
+@pytest.fixture
+def mock_user_update():
+    return User(
+        username="update_user",
+        email="teste_update@teste.com",
+        password="stringupdate",
+        role="user",
+        disabled=False,
+    )
+
+
+@pytest.fixture
+def mock_list_user():
+    return [
+        User(
+            username="teste_de_user1",
+            email="teste1@teste.com",
+            password="stringstri",
+            role="user",
+            disabled=False,
+        ),
+        User(
+            username="teste_de_user2",
+            email="teste2@teste.com",
+            password="stringstri",
+            role="user",
+            disabled=False,
+        ),
+        User(
+            username="teste_de_user3",
+            email="teste3@teste.com",
+            password="stringstri",
+            role="user",
+            disabled=False,
+        ),
+        User(
+            username="teste_de_user4",
+            email="teste4@teste.com",
+            password="stringstri",
+            role="user",
+            disabled=False,
+        ),
+        User(
+            username="teste_de_user5",
+            email="teste5@teste.com",
+            password="stringstri",
+            role="user",
+            disabled=False,
+        ),
+    ]

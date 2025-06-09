@@ -50,10 +50,10 @@ class UserRepository:
         db_user.disabled = True
         await self.session.commit()
         await self.session.refresh(db_user)
-        return db_user
+        return await db_user
 
     async def enable_user(self, db_user: User) -> User:
         db_user.disabled = False
         await self.session.commit()
         await self.session.refresh(db_user)
-        return db_user
+        return await db_user
