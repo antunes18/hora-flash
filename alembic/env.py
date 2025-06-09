@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from api import models
+from api.models import user, scheduling
 from alembic import context
 
 from api.core.database import Base
