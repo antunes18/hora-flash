@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SQL_ALCHEMY_DATABASE_URL = os.getenv("DB_URL")
-
+SQL_ALCHEMY_DATABASE_URL = os.getenv("DB_URL", "sqlite+aiosqlite:///./default.db")
 
 engine = create_engine(
     SQL_ALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
