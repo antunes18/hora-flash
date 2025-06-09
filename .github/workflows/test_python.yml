@@ -15,7 +15,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # Use a versão do Python que seu projeto requer
+        python-version: '3.13' # Use a versão do Python que seu projeto requer
         cache: 'pip' # Habilita o cache de dependências do pip para builds mais rápidos
 
     - name: Install Python dependencies
@@ -34,6 +34,3 @@ jobs:
       run: pytest
     # --- Fim da seção de testes adicionada ---
 
-    - name: Build the Docker image (Este passo original pode ser removido se o 'docker/build-push-action' for suficiente)
-      # Se o 'docker/build-push-action' no final for usado para construir E empurrar,
-      # este passo pode ser redundante e causar uma construção dupla.name: Docker Image CI
