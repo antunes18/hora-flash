@@ -2,7 +2,7 @@ from fastapi import responses
 import pytest
 import warnings
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, engine
 from sqlalchemy.orm.session import sessionmaker
 
 from api.core.database import Base
@@ -69,3 +69,18 @@ def auth_headers(client, db_session):
     assert response.status_code == 200
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+
+def setup():
+    Base.metadata.create_all(bind=engine)
+
+    session = TestingSessionLocal()
+    # create test items
+    db_item = mock_user_create
+    session.add(db_item)
+    session.commit()
+    session.close()
+
+
+def teardown():
+    Base.metadata.drop_all(bind=engine)
