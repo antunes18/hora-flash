@@ -2,30 +2,30 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "dev" ] # Garanta que a branch 'dev' está correta
+    branches: [ "dev" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Garanta que este nível de indentação está correto (2 espaços)
+    runs-on: ubuntu-latest
 
-    steps: # Garanta que este nível de indentação está correto (4 espaços)
-    - uses: actions/checkout@v3 # Garanta que este nível de indentação está correto (2 espaços após '-')
+    steps:
+    - uses: actions/checkout@v3
 
     # --- Configuração do Python e execução dos testes ---
-    - name: Set up Python # Nível de indentação: 2 espaços após '-'
+    - name: Set up Python
       uses: actions/setup-python@v5
-      with: # Nível de indentação: 6 espaços
+      with:
         python-version: '3.13'
         cache: 'pip'
 
-    - name: Install Python dependencies # Nível de indentação: 2 espaços após '-'
-      run: | # Nível de indentação: 6 espaços
+    - name: Install Python dependencies 
+      run: | 
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-asyncio anyio # Adicione 'anyio' para garantir que está instalado para pytest-asyncio
+        pip install pytest pytest-asyncio anyio 
 
-    - name: Run tests # Nível de indentação: 2 espaços após '-'
-      env: # Nível de indentação: 6 espaços
+    - name: Run tests
+      env:
         PYTHONPATH: ${{ github.workspace }}
-      run: python -m pytest -W ignore::DeprecationWarning # Nível de indentação: 6 espaços
+      run: python -m pytest -W ignore::DeprecationWarning 
   
