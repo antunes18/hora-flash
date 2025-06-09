@@ -31,5 +31,7 @@ jobs:
     - name: Run tests
       # Este passo é crucial. Se 'pytest' retornar um código de saída diferente de zero (indicando falha),
       # esta etapa falhará e o workflow será interrompido, impedindo o build e o push da imagem Docker.
+      env:
+       PYTHONPATH: ${{ github.workspace }} # github.workspace é o diretório raiz do seu repositório
       run: python -m pytest -W ignore::DeprecationWarning  
     # --- Fim da seção de testes adicionada ---
