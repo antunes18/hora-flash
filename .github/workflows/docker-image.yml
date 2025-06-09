@@ -12,6 +12,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+# --- Configuração do Python e execução dos testes ---
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        cache: 'pip'
+
+    - name: Install Python dependencies 
+      run: | 
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio anyio 
+
+    - name: Run tests
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: pytest -W ignore::DeprecationWarning 
+  
+### Geração da Imagem Docker para o DockerHub
+    
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag criasltda/horaflash:latest
 
