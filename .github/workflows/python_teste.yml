@@ -27,5 +27,5 @@ jobs:
     - name: Run tests
       env:
         PYTHONPATH: ${{ github.workspace }}
-      run: python -m pytest -W ignore::DeprecationWarning 
+      run: pytest -W ignore::DeprecationWarning 
   
