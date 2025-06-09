@@ -33,5 +33,5 @@ jobs:
       # esta etapa falhará e o workflow será interrompido, impedindo o build e o push da imagem Docker.
       env:
        PYTHONPATH: ${{ github.workspace }} # github.workspace é o diretório raiz do seu repositório
-      run: python -m pytest -W ignore::DeprecationWarning  
+      run: pytest -W ignore::DeprecationWarning  
     # --- Fim da seção de testes adicionada ---
