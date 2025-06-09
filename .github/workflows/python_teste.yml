@@ -1,54 +1,32 @@
-name: Test FastAPI
+name: Docker Image CI
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev" ] # Garanta que a branch 'dev' está correta
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+    runs-on: ubuntu-latest # Garanta que este nível de indentação está correto (2 espaços)
 
-    # --- Adicionado: Configuração do Python e execução dos testes ---
-    - name: Set up Python
+    steps: # Garanta que este nível de indentação está correto (4 espaços)
+    - uses: actions/checkout@v3 # Garanta que este nível de indentação está correto (2 espaços após '-')
+
+    # --- Configuração do Python e execução dos testes ---
+    - name: Set up Python # Nível de indentação: 2 espaços após '-'
       uses: actions/setup-python@v5
-      with:
+      with: # Nível de indentação: 6 espaços
         python-version: '3.13'
         cache: 'pip'
 
-    - name: Install Python dependencies
-      run: |
+    - name: Install Python dependencies # Nível de indentação: 2 espaços após '-'
+      run: | # Nível de indentação: 6 espaços
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-asyncio anyio # Ensure anyio is also installed if it's a plugin
+        pip install pytest pytest-asyncio anyio # Adicione 'anyio' para garantir que está instalado para pytest-asyncio
 
-    # --- Debugging Steps ---
-    - name: Show current directory and list files
-      run: |
-        pwd
-        ls -la
-        ls -la test/
-        ls -la test/mocks/
-        ls -la test/services/
-
-    - name: Print PYTHONPATH
-      run: echo "PYTHONPATH is: $PYTHONPATH"
-      env:
+    - name: Run tests # Nível de indentação: 2 espaços após '-'
+      env: # Nível de indentação: 6 espaços
+        DATABASE_URL: sqlite+aiosqlite:///:memory: # Certifique-se que o database.py lida com isso.
         PYTHONPATH: ${{ github.workspace }}
-
-    - name: Print Python sys.path (how Python sees its paths)
-      # This will show you exactly what Python considers its module search path
-      run: |
-        python -c "import sys; print(sys.path)"
-      env:
-        PYTHONPATH: ${{ github.workspace }}
-    # --- End Debugging Steps ---
-
-    - name: Run tests
-      env:
-        DATABASE_URL: sqlite+aiosqlite:///:memory:
-        PYTHONPATH: ${{ github.workspace }} # Ensure it's set here too
-      run: python -m pytest -W ignore::DeprecationWarning
-
-    # ... (Seus passos de Docker buildx, login, build/push) ...
+      run: python -m pytest -W ignore::DeprecationWarning # Nível de indentação: 6 espaços
+      # ^^^ LINHA 36 PODE ESTAR AQUI OU LOGO DEPOIS ^^^
