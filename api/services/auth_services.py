@@ -8,12 +8,13 @@ from api.models.user import User
 from api.core.auth import Token
 from api.exceptions.user_exceptions import UserNotFound
 
+
 class UserServices:
     def __init__(self, user_repo: UserRepository) -> None:
         self.user_repo = user_repo
 
-    async def register_user(self, user: UserCreateDTO):
-        existing = await self.user_repo.get_user_by_email(user.email)
+    def register_user(self, user: UserCreateDTO):
+        existing = self.user_repo.get_user_by_email(user.email)
         if existing:
             raise user_exceptions.UserAlreadyExist()
         user = User(
@@ -23,9 +24,9 @@ class UserServices:
             role=user.role,
             disabled=False,
         )
-        return await self.user_repo.create_user(user)
+        return self.user_repo.create_user(user)
 
-    async def login(self, user_login: UserLoginDTO) -> Token:
+    def login(self, user_login: UserLoginDTO) -> Token:
         user_data: UserResponseDTO = self.user_repo.get_user_by_email(user_login.email)
         if not user_data:
             raise user_exceptions.UserNotFound()
@@ -37,32 +38,32 @@ class UserServices:
 
         raise user_exceptions.UserPasswordNotFind()
 
-    async def get_all(self, skip: int, limit: int):
-        return await self.user_repo.get_all_users(skip, limit)
+    def get_all(self, skip: int, limit: int):
+        return self.user_repo.get_all_users(skip, limit)
 
-    async def get_user(self, user_id: int):
-        return await self.user_repo.get_user(user_id)
+    def get_user(self, user_id: int):
+        return self.user_repo.get_user(user_id)
 
-    async def get_user_by_email(self, email: str):
-        return await self.user_repo.get_user_by_email(email)
+    def get_user_by_email(self, email: str):
+        return self.user_repo.get_user_by_email(email)
 
-    async def update_user(self, user_id: int, update_user: User):
-        user = await self.user_repo.get_user(user_id)
+    def update_user(self, user_id: int, update_user: User):
+        user = self.user_repo.get_user(user_id)
         if user is None:
             raise UserNotFound()
 
-        return await self.user_repo.update_user(user, update_user)
+        return self.user_repo.update_user(user, update_user)
 
-    async def delete_user(self, user_id: int):
-        user = await self.user_repo.get_user(user_id)
+    def delete_user(self, user_id: int):
+        user = self.user_repo.get_user(user_id)
         if user is None:
             raise UserNotFound()
 
-        return await self.user_repo.disable_user(user)
+        return self.user_repo.disable_user(user)
 
-    async def restore_user(self, user_id: int):
-        user = await self.user_repo.get_user(user_id)
+    def restore_user(self, user_id: int):
+        user = self.user_repo.get_user(user_id)
         if user is None:
             raise UserNotFound()
 
-        return await self.user_repo.enable_user(user)
+        return self.user_repo.enable_user(user)
