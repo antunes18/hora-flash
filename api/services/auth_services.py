@@ -2,72 +2,68 @@ from api.core import auth
 from sqlalchemy.orm import Session
 from api.exceptions import user_exceptions
 from api.models.dto.user_dto import UserCreateDTO, UserResponseDTO, UserLoginDTO
-from api.repository import user_repository as repository
+
+from api.repository.user_repository import UserRepository
 from api.models.user import User
 from api.core.auth import Token
 from api.exceptions.user_exceptions import UserNotFound
 
 
-def register_user(user: UserCreateDTO, db: Session):
-    existing = repository.get_user_by_email(user.email, db)
-    if existing:
-        raise user_exceptions.UserAlreadyExist()
+class UserServices:
+    def __init__(self, user_repo: UserRepository) -> None:
+        self.user_repo = user_repo
 
-    user = User(
-        username=user.username,
-        email=user.email,
-        password=auth.hash_password(user.password),
-        role=user.role,
-        disabled=False,
-    )
-    return repository.create_user(user, db)
+    def register_user(self, user: UserCreateDTO):
+        existing = self.user_repo.get_user_by_email(user.email)
+        if existing:
+            raise user_exceptions.UserAlreadyExist()
+        user = User(
+            username=user.username,
+            email=user.email,
+            password=auth.hash_password(user.password),
+            role=user.role,
+            disabled=False,
+        )
+        return self.user_repo.create_user(user)
 
+    def login(self, user_login: UserLoginDTO) -> Token:
+        user_data: UserResponseDTO = self.user_repo.get_user_by_email(user_login.email)
+        if not user_data:
+            raise user_exceptions.UserNotFound()
 
-def login(user_login: UserLoginDTO, db: Session) -> Token:
-    user_data: UserResponseDTO = repository.get_user_by_email(user_login.email, db)
+        if auth.verify_password(user_login.password, user_data.password):
+            token = auth.sign(user_data)
 
-    if not user_data:
-        raise user_exceptions.UserNotFound()
+            return Token(access_token=token)
 
-    if auth.verify_password(user_login.password, user_data.password):
-        token = auth.sign(user_data)
+        raise user_exceptions.UserPasswordNotFind()
 
-        return Token(access_token=token)
+    def get_all(self, skip: int, limit: int):
+        return self.user_repo.get_all_users(skip, limit)
 
-    raise user_exceptions.UserPasswordNotFind()
+    def get_user(self, user_id: int):
+        return self.user_repo.get_user(user_id)
 
+    def get_user_by_email(self, email: str):
+        return self.user_repo.get_user_by_email(email)
 
-def get_all(skip: int, limit: int, db: Session):
-    return repository.get_all_users(skip, limit, db)
+    def update_user(self, user_id: int, update_user: User):
+        user = self.user_repo.get_user(user_id)
+        if user is None:
+            raise UserNotFound()
 
+        return self.user_repo.update_user(user, update_user)
 
-def get_user(user_id: int, db: Session):
-    return repository.get_user(user_id, db)
+    def delete_user(self, user_id: int):
+        user = self.user_repo.get_user(user_id)
+        if user is None:
+            raise UserNotFound()
 
+        return self.user_repo.disable_user(user)
 
-def get_user_by_email(email: str, db: Session):
-    return repository.get_user_by_email(email, db)
+    def restore_user(self, user_id: int):
+        user = self.user_repo.get_user(user_id)
+        if user is None:
+            raise UserNotFound()
 
-
-def update_user(user_id: int, update_user: User, db: Session):
-    user = get_user(user_id, db)
-    if user is None:
-        raise UserNotFound()
-
-    return repository.update_user(user, update_user, db)
-
-
-def delete_user(user_id: int, db: Session):
-    user = get_user(user_id, db)
-    if user is None:
-        raise UserNotFound()
-
-    return repository.disable_user(user, db)
-
-
-def restore_user(user_id: int, db: Session):
-    user = get_user(user_id, db)
-    if user is None:
-        raise UserNotFound()
-
-    return repository.enable_user(user, db)
+        return self.user_repo.enable_user(user)

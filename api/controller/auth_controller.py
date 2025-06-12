@@ -2,7 +2,8 @@ from api.core.auth import Token
 from api.core.jwt_bearer import JwtBearer
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from api.services import auth_services as services
+from api.repository.user_repository import UserRepository
+from api.services.auth_services import UserServices as services
 from api.core.database import get_db
 from api.models.user import User
 from api.models.dto.user_dto import (
@@ -15,6 +16,16 @@ from api.exceptions.message import GenericError
 from typing import List
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+def get_user_repo(db: Session = Depends(get_db)) -> UserRepository:
+    return UserRepository(session=db)
+
+
+def get_user_services(
+    user_repo: UserRepository = Depends(get_user_repo),
+) -> services:
+    return services(user_repo=user_repo)
 
 
 @router.post(
@@ -37,8 +48,10 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
         422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
-def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
-    return services.register_user(request, db)
+def sign_up(
+    request: UserCreateDTO, user_services: services = Depends(get_user_services)
+):
+    return user_services.register_user(request)
 
 
 @router.post(
@@ -57,8 +70,10 @@ def sign_up(request: UserCreateDTO, db: Session = Depends(get_db)):
         422: {"model": GenericError, "description": "Dados Invalidos!"},
     },
 )
-def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
-    return services.login(request, db)
+def sign_in(
+    request: UserLoginDTO, user_services: services = Depends(get_user_services)
+):
+    return user_services.login(request)
 
 
 @router.get(
@@ -77,8 +92,12 @@ def sign_in(request: UserLoginDTO, db: Session = Depends(get_db)):
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
 )
-def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return services.get_all(skip, limit, db)
+def get_all_users(
+    skip: int = 0,
+    limit: int = 100,
+    user_services: services = Depends(get_user_services),
+):
+    return user_services.get_all(skip, limit)
 
 
 @router.get(
@@ -97,8 +116,8 @@ def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
 )
-def get_user(user_id: int, db: Session = Depends(get_db)):
-    return services.get_user(user_id, db)
+def get_user(user_id: int, user_services: services = Depends(get_user_services)):
+    return user_services.get_user(user_id)
 
 
 @router.put(
@@ -117,9 +136,11 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     },
 )
 def update_user(
-    user_id: int, update_user_data: UserUpdateDTO, db: Session = Depends(get_db)
+    user_id: int,
+    update_user_data: UserUpdateDTO,
+    user_services: services = Depends(get_user_services),
 ):
-    return services.update_user(user_id, update_user_data, db)
+    return user_services.update_user(user_id, update_user_data)
 
 
 @router.delete(
@@ -137,8 +158,8 @@ def update_user(
         500: {"model": GenericError, "description": "Error no Servidor!"},
     },
 )
-def delete_user(user_id: int, db: Session = Depends(get_db)):
-    return services.delete_user(user_id, db)
+def delete_user(user_id: int, user_services: services = Depends(get_user_services)):
+    return user_services.delete_user(user_id)
 
 
 @router.put(
@@ -157,8 +178,8 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
 )
-def restore_user(user_id: int, db: Session = Depends(get_db)):
-    return services.restore_user(user_id, db)
+def restore_user(user_id: int, user_services: services = Depends(get_user_services)):
+    return user_services.restore_user(user_id)
 
 
 @router.get("/teste", dependencies=[Depends(JwtBearer())])

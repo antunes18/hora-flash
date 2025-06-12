@@ -12,6 +12,11 @@ class UserInvalidData(HTTPException):
         super().__init__(status_code=422, detail=detail)
 
 
+class UserInvalidUsername(HTTPException):
+    def __init__(self, detail: str = "Usuário com esse Nome já está em Uso!"):
+        super().__init__(status_code=400, detail=detail)
+
+
 class UserNotFound(HTTPException):
     def __init__(self, detail: str = "Usuário Não Encontrado!"):
         super().__init__(status_code=404, detail=detail)
@@ -19,7 +24,7 @@ class UserNotFound(HTTPException):
 
 class UserAlreadyExist(HTTPException):
     def __init__(self, detail: str = "Usuário com esse Email já existe!"):
-        super().__init__(status_code=401, detail=detail)
+        super().__init__(status_code=400, detail=detail)
 
 
 class UserPasswordNotFind(HTTPException):

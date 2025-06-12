@@ -1,49 +1,50 @@
-from fastapi import Depends
-from sqlalchemy import values
-from sqlalchemy.orm import Session
-from api.core.database import get_db
-from api.exceptions.user_exceptions import UserNotFound
-from api.models.dto.user_dto import UserResponseDTO
+from sqlalchemy import select
+from sqlalchemy.orm.session import Session
 from api.models.user import User
 
 
-def create_user(user: User, db: Session) -> User:
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+class UserRepository:
+    def __init__(self, session: Session) -> None:
+        self.session = session
 
+    def create_user(self, user: User) -> User:
+        self.session.add(user)
+        self.session.commit()
+        self.session.refresh(user)
+        return user
 
-def get_all_users(skip: int, limit: int, db: Session) -> list[User]:
-    return db.query(User).filter(User.disabled == False).offset(skip).limit(limit).all()
+    def get_all_users(self, skip: int, limit: int) -> list[User]:
+        result = self.session.execute(
+            select(User).filter(User.disabled is False).offset(skip).limit(limit)
+        )
+        return list(result.scalars().all())
 
+    def get_user(self, user_id: int) -> User:
+        return (
+            self.session.query(User)
+            .filter(User.id == user_id and User.disabled == False)
+            .first()
+        )
 
-def get_user(user_id: int, db: Session) -> User:
-    return db.query(User).filter(User.id == user_id and User.disabled == False).first()
+    def get_user_by_email(self, email: str) -> User:
+        return self.session.query(User).filter(User.email == email).first()
 
+    def update_user(self, db_user: User, user: User) -> User:
+        for key, value in user.dict(exclude_unset=True).items():
+            setattr(db_user, key, value)
 
-def get_user_by_email(email: str, db: Session) -> User:
-    return db.query(User).filter(User.email == email).first()
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user
 
+    def disable_user(self, db_user: User) -> User:
+        db_user.disabled = True
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user
 
-def update_user(db_user: User, user: User, db: Session) -> User:
-    for key, value in user.dict(exclude_unset=True).items():
-        setattr(db_user, key, value)
-
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def disable_user(db_user: User, db: Session) -> User:
-    db_user.disabled = True
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def enable_user(db_user: User, db: Session) -> User:
-    db_user.disabled = False
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    def enable_user(self, db_user: User) -> User:
+        db_user.disabled = False
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user
