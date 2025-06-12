@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, ValidationError
+from pydantic import BaseModel, field_validator, ValidationError, model_validator
 from api.exceptions import scheduling_exceptions
 
 from datetime import date, datetime
@@ -22,8 +22,13 @@ class Scheduling(BaseModel):
             return value
         raise scheduling_exceptions.InvalidData("Não é possivel registrar para uma data anterior de hoje!")
 
-    @field_validator("hour")
+    @model_validator(mode="before")
     def validate_hour_is_after_now(cls, value):
-        if value >= datetime.now().hour:
+        dt = value["date"]
+
+        date_object = datetime.strptime(dt, '%Y-%m-%d').date()
+
+
+        if value["hour"] >= datetime.now().hour or date_object > date.today():
             return value
         raise scheduling_exceptions.InvalidData("Não é possivel registrar para um horario anterior que agora!")
