@@ -1,5 +1,6 @@
+from logging import disable
 from sqlalchemy import select
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
 from api.models.user import User
 
 
@@ -15,14 +16,14 @@ class UserRepository:
 
     def get_all_users(self, skip: int, limit: int) -> list[User]:
         result = self.session.execute(
-            select(User).filter(User.disabled is False).offset(skip).limit(limit)
+            select(User).filter(User.disabled == False).offset(skip).limit(limit)
         )
         return list(result.scalars().all())
 
     def get_user(self, user_id: int) -> User:
         return (
             self.session.query(User)
-            .filter(User.id == user_id and User.disabled == False)
+            .filter((User.id == user_id) and (User.disabled is not True))
             .first()
         )
 
