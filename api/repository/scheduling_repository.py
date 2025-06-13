@@ -1,6 +1,7 @@
 import datetime
 
 from sqlalchemy.orm import Session
+from sqlalchemy import extract # Import extract
 
 from api.models.scheduling import Scheduling
 
@@ -15,13 +16,15 @@ class SchedulingReposistory:
         self.session.refresh(scheduling)
         return scheduling
 
-    def fing_scheduling_by_date_and_hour(
-        self, date: datetime.datetime, hour: int
+    def find_scheduling_by_date_and_hour( # Renamed function
+        self, date: datetime.date, hour: int # Changed type hint for date
     ) -> Scheduling | None:
         return (
             self.session.query(Scheduling)
             .filter(
-                Scheduling.date.startswith(date),
+                extract('year', Scheduling.date) == date.year,
+                extract('month', Scheduling.date) == date.month,
+                extract('day', Scheduling.date) == date.day,
                 Scheduling.hour == hour,
                 Scheduling.is_deleted == False,
             )
