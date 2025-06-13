@@ -165,10 +165,11 @@ def restore_scheduling(
     },
 )
 def update_scheduling(
-    scheduling_id: int, scheduling: Scheduling, db: Session = Depends(get_db)
+    scheduling_id: int,
+    scheduling: Scheduling,
+    scheduling_services: services = Depends(get_scheduling_services),
 ):
     try:
         return scheduling_services.update_scheduling(scheduling_id, scheduling)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
