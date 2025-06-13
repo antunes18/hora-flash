@@ -4,8 +4,8 @@ from api.exceptions import scheduling_exceptions
 from datetime import date, datetime
 
 class Scheduling(BaseModel):
-    hour: int
     date: date
+    hour: int
     name: str
     user_id: int
     phone: str
@@ -22,13 +22,12 @@ class Scheduling(BaseModel):
             return value
         raise scheduling_exceptions.InvalidData("Não é possivel registrar para uma data anterior de hoje!")
 
-    @model_validator(mode="before")
-    def validate_hour_is_after_now(cls, value):
-        dt = value["date"]
-
-        date_object = datetime.strptime(dt, '%Y-%m-%d').date()
-
-
-        if value["hour"] >= datetime.now().hour or date_object > date.today():
+    @field_validator("hour")
+    def validate_hour_is_after_now(cls, value, info):
+        data = info.data['date']
+        print(type(data))
+        if value > datetime.now().hour or data > date.today():
             return value
+
         raise scheduling_exceptions.InvalidData("Não é possivel registrar para um horario anterior que agora!")
+
