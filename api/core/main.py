@@ -11,7 +11,6 @@ app = FastAPI()
 
 
 app.add_middleware(LogMiddleware)
-
 app.include_router(auth_controller.router)
 app.include_router(user_controller.router)
 app.include_router(scheduling_controller.router)
