@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
+
 from api.core.database import Base
 
 
@@ -11,3 +13,4 @@ class User(Base):
     password = Column(String, unique=False, nullable=False)
     role = Column(String, unique=False, nullable=False)
     disabled = Column(Boolean, default=False)
+    scheduling = relationship("Scheduling", back_populates="user")

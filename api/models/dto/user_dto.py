@@ -25,6 +25,7 @@ class UserUpdateDTO(BaseModel):
 
 
 class UserResponseDTO(BaseModel):
+    id: int
     username: str
     email: str
     number: int
