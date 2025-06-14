@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from api.repository.user_repository import UserRepository
 from api.services.auth_services import UserServices as services
 from api.core.database import get_db
-from api.models.user import User
 from api.models.dto.user_dto import (
     UserCreateDTO,
     UserLoginDTO,
@@ -133,6 +132,7 @@ def get_user(user_id: int, user_services: services = Depends(get_user_services))
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
     status_code=204,
+    dependencies=[Depends(JwtBearer())],
 )
 def update_user(
     user_id: int,
@@ -156,6 +156,7 @@ def update_user(
         500: {"model": GenericError, "description": "Error no Servidor!"},
     },
     status_code=204,
+    dependencies=[Depends(JwtBearer())],
 )
 def delete_user(user_id: int, user_services: services = Depends(get_user_services)):
     return user_services.delete_user(user_id)
@@ -177,6 +178,7 @@ def delete_user(user_id: int, user_services: services = Depends(get_user_service
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
     status_code=201,
+    dependencies=[Depends(JwtBearer())],
 )
 def restore_user(user_id: int, user_services: services = Depends(get_user_services)):
     return user_services.restore_user(user_id)

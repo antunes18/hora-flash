@@ -16,6 +16,7 @@ class UserCreateDTO(BaseModel):
 
 class UserUpdateDTO(BaseModel):
     username: str = Field(min_length=3, max_length=50)
+    number: str = Field(pattern=r"^\d{13,}$", min_length=13, max_length=13)
     password: str = Field(min_length=8, max_length=128)
     confirm_password: str = Field(min_length=8, max_length=128)
 

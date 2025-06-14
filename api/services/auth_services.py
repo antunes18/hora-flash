@@ -34,6 +34,9 @@ class UserServices:
 
     def login(self, user_login: UserLoginDTO) -> Token:
         user_data: UserResponseDTO = self.user_repo.get_user_by_email(user_login.email)
+        print(user_data.email)
+        print(user_data.username)
+
         if not user_data:
             raise user_exceptions.UserNotFound()
 
@@ -65,6 +68,12 @@ class UserServices:
         user = self.user_repo.get_user(user_id)
         if user is None:
             raise UserNotFound()
+
+        if self.user_repo.get_user_by_username(update_user.username):
+            raise user_exceptions.UserInvalidUsername()
+
+        if self.user_repo.get_user_by_phone_number(update_user.number):
+            raise user_exceptions.UserPhoneNumberAlreadyUsed
 
         return self.user_repo.update_user(user, update_user)
 
