@@ -15,8 +15,8 @@ class SchedulingService:
         self.user_repo = user_repo
 
     def create_scheduling(self, dto: scheduling_dto):
-        existing = self.scheduling_repo.find_scheduling_by_date_and_hour(
-            dto.date, dto.hour
+        existing = self.scheduling_repo.find_scheduling_by_date_and_hour_and_user(
+            dto.date, dto.hour, dto.user_id
         )
         user = self.user_repo.get_user(dto.user_id)
 
