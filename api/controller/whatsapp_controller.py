@@ -1,10 +1,11 @@
 from fastapi.responses import JSONResponse
 import requests
 from api.exceptions.message import GenericError
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from api.models.enums.type import ContentTypeEnum
-from dotenv import load_dotenv
 import os
+
+from api.core.jwt_bearer import JwtBearer
 
 router = APIRouter(prefix="/whats", tags=["Whatsapp"])
 
@@ -28,6 +29,7 @@ router = APIRouter(prefix="/whats", tags=["Whatsapp"])
         },
     },
     status_code=201,
+    dependencies=[Depends(JwtBearer())],
 )
 def send_message(number: str, message: str):
     response = requests.post(
@@ -59,6 +61,7 @@ def send_message(number: str, message: str):
         },
     },
     status_code=201,
+    dependencies=[Depends(JwtBearer())],
 )
 def send_media(
     number: str,
@@ -99,6 +102,7 @@ def send_media(
         },
     },
     status_code=201,
+    dependencies=[Depends(JwtBearer())],
 )
 def send_audio(number: str, audio_url: str):
     response = requests.post(
