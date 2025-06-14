@@ -13,7 +13,7 @@ from api.services.scheduling_services import SchedulingService as services
 from api.models.dto.scheduling_dto import Scheduling
 
 
-router = APIRouter(prefix="/scheduling", tags=["scheduling"])
+router = APIRouter(prefix="/scheduling", tags=["Scheduling"])
 
 
 def get_scheduling_repo(db: Session = Depends(get_db)) -> SchedulingReposistory:
