@@ -2,7 +2,7 @@ from api.core.auth import Token
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from api.repository.user_repository import UserRepository
-from api.services.auth_services import UserServices as services
+from api.services.auth_services import AuthServices as services
 from api.core.database import get_db
 from api.models.dto.user_dto import (
     UserCreateDTO,

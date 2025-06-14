@@ -57,3 +57,9 @@ class UserRepository:
         self.session.commit()
         self.session.refresh(db_user)
         return db_user
+
+    def set_role(self, db_user: User, role: roles.Roles) -> User:
+        db_user.role = role.value
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user

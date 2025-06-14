@@ -2,12 +2,13 @@ from api.core.jwt_bearer import JwtBearer
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from api.repository.user_repository import UserRepository
-from api.services.auth_services import UserServices as services
+from api.services.user_services import UserServices as services
 from api.core.database import get_db
 from api.models.dto.user_dto import (
     UserResponseDTO,
     UserUpdateDTO,
 )
+from api.models.enums.roles import Roles
 from api.exceptions.message import GenericError
 from typing import List
 
@@ -115,7 +116,6 @@ def delete_user(user_id: int, user_services: services = Depends(get_user_service
 
 @router.put(
     "/restore/{user_id}",
-    response_model=UserResponseDTO,
     response_model_exclude_unset=True,
     responses={
         201: {
@@ -128,8 +128,31 @@ def delete_user(user_id: int, user_services: services = Depends(get_user_service
         },
         500: {"model": GenericError, "description": "Error no Servidor"},
     },
-    status_code=201,
+    status_code=204,
     dependencies=[Depends(JwtBearer())],
 )
 def restore_user(user_id: int, user_services: services = Depends(get_user_services)):
     return user_services.restore_user(user_id)
+
+
+@router.put(
+    "/setRole/{user_id}",
+    response_model_exclude_unset=True,
+    responses={
+        201: {
+            "model": UserResponseDTO,
+            "description": "Role Alterada com sucesso",
+        },
+        404: {
+            "model": GenericError,
+            "description": "Usuário Não Encontrado",
+        },
+        500: {"model": GenericError, "description": "Error no Servidor"},
+    },
+    status_code=204,
+    dependencies=[Depends(JwtBearer())],
+)
+def set_role_user(
+    user_id: int, role: Roles, user_services: services = Depends(get_user_services)
+):
+    return user_services.change_role_user(user_id, role)
