@@ -14,14 +14,20 @@ class UserServices:
         self.user_repo = user_repo
 
     def register_user(self, user: UserCreateDTO):
-        existing = self.user_repo.get_user_by_email(user.email)
-        if existing:
+        if self.user_repo.get_user_by_email(user.email):
             raise user_exceptions.UserAlreadyExist()
+
+        if self.user_repo.get_user_by_username(user.username):
+            raise user_exceptions.UserInvalidUsername()
+
+        if self.user_repo.get_user_by_phone_number(user.number):
+            raise user_exceptions.UserPhoneNumberAlreadyUsed()
+
         user = User(
             username=user.username,
             email=user.email,
+            number=user.number,
             password=auth.hash_password(user.password),
-            role=user.role,
             disabled=False,
         )
         return self.user_repo.create_user(user)
