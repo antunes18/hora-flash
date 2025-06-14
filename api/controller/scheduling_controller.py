@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from api.core.database import get_db
 from api.exceptions.message import GenericError
+from api.exceptions import scheduling_exceptions # Import scheduling_exceptions
 from api.models import scheduling
 from api.models.enums.type import MsgReturn
 from api.repository.scheduling_repository import SchedulingReposistory
@@ -13,7 +14,7 @@ from api.services.scheduling_services import SchedulingService as services
 from api.models.dto.scheduling_dto import Scheduling
 
 
-router = APIRouter(prefix="/book", tags=["book"])
+router = APIRouter(prefix="/scheduling", tags=["scheduling"])
 
 
 def get_scheduling_repo(db: Session = Depends(get_db)) -> SchedulingReposistory:
@@ -39,7 +40,7 @@ def get_scheduling_services(
     responses={
         201: {
             "model": Scheduling,
-            "description": "Book foi Criado com Sucesso!",
+            "description": "Scheduling foi Criado com Sucesso!",
         },
         400: {
             "model": GenericError,
@@ -65,7 +66,7 @@ def create_Scheduling(
     responses={
         200: {
             "model": List[Scheduling],
-            "description": "Lista de Books",
+            "description": "Lista de Schedulings",
         }
     },
 )
@@ -84,11 +85,11 @@ def get_all_scheduling(
     responses={
         200: {
             "model": Scheduling,
-            "description": "Informações do Book",
+            "description": "Informações do Scheduling",
         },
         404: {
             "model": GenericError,
-            "description": "Book Não Encontrado",
+            "description": "Scheduling Não Encontrado",
         },
     },
 )
@@ -97,6 +98,8 @@ def get_one_scheduling(
 ):
     try:
         return scheduling_services.get_scheduling(scheduling_id)
+    except scheduling_exceptions.NotFound as e: # Catch specific exception first
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -108,11 +111,11 @@ def get_one_scheduling(
     responses={
         200: {
             "model": MsgReturn,
-            "description": "Book excluido",
+            "description": "Scheduling excluído",
         },
         404: {
             "model": GenericError,
-            "description": "Book Não Encontrado",
+            "description": "Scheduling Não Encontrado",
         },
     },
 )
@@ -121,6 +124,8 @@ def delete_scheduling(
 ):
     try:
         return scheduling_services.delete_scheduling(scheduling_id)
+    except scheduling_exceptions.NotFound as e: # Catch specific exception first
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -132,11 +137,11 @@ def delete_scheduling(
     responses={
         200: {
             "model": MsgReturn,
-            "description": "Book restaurado",
+            "description": "Scheduling restaurado",
         },
         404: {
             "model": GenericError,
-            "description": "Book Não Encontrado",
+            "description": "Scheduling Não Encontrado",
         },
     },
 )
@@ -145,6 +150,8 @@ def restore_scheduling(
 ):
     try:
         return scheduling_services.restore_scheduling(scheduling_id)
+    except scheduling_exceptions.NotFound as e: # Catch specific exception first
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -156,11 +163,11 @@ def restore_scheduling(
     responses={
         200: {
             "model": Scheduling,
-            "description": "Book Atualizado",
+            "description": "Scheduling Atualizado",
         },
         404: {
             "model": GenericError,
-            "description": "Book Não Encontrado",
+            "description": "Scheduling Não Encontrado",
         },
     },
 )
@@ -171,5 +178,7 @@ def update_scheduling(
 ):
     try:
         return scheduling_services.update_scheduling(scheduling_id, scheduling)
+    except scheduling_exceptions.NotFound as e: # Catch specific exception first
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
