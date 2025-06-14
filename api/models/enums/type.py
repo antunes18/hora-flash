@@ -6,3 +6,6 @@ class ContentTypeEnum(str, Enum):
     image = "image"
     video = "video"
     audio = "audio"
+
+class MsgReturn(str, Enum):
+    msg = "msg"

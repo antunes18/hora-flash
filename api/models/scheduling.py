@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, DateTime, String, Boolean
+from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
+
 
 from api.core.database import Base
 
@@ -9,4 +11,6 @@ class Scheduling(Base):
     date = Column(DateTime, nullable=False)
     name = Column(String, nullable=False)
     phone = Column(String, nullable=False)
-    is_deleted = Column(Boolean, nullable=False, default=False)
+    user_id = Column(ForeignKey("users.id"))
+    user = relationship("User", back_populates="scheduling")
+    is_deleted = Column(Boolean, default=False)
