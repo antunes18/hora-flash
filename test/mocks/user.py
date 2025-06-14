@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.models.user import User
-from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
+from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO
 from api.models.enums.roles import Roles
 from unittest.mock import AsyncMock
 
@@ -37,6 +37,7 @@ def test_user_create():
         username="teste_de_user",
         email="teste@teste.com",
         password="stringstri",
+        number="1234567891234",
         confirm_password="stringstri",
         role=Roles.user,
     )
@@ -53,6 +54,7 @@ def mock_user():
         username="teste_de_user",
         email="teste@teste.com",
         password="stringstri",
+        number="1234567891234",
         role="user",
         disabled=False,
     )
@@ -64,7 +66,7 @@ def mock_user_update():
         username="update_user",
         email="teste_update@teste.com",
         password="stringupdate",
-        role="user",
+        number="1234567891234",
         disabled=False,
     )
 
