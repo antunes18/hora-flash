@@ -10,6 +10,7 @@ from api.models import scheduling
 from api.models.enums.type import MsgReturn
 from api.repository.scheduling_repository import SchedulingReposistory
 from api.repository.user_repository import UserRepository
+from api.services import scheduling_services
 from api.services.scheduling_services import SchedulingService as services
 from api.models.dto.scheduling_dto import Scheduling
 
@@ -77,6 +78,25 @@ def get_all_scheduling(
 ):
     return scheduling_services.get_all_schedulings(skip, limit)
 
+@router.get(
+    "/user/{user_id}",
+    response_model=List[Scheduling],
+    response_model_exclude_unset=True,
+    responses={
+        200: {
+            "model": List[Scheduling],
+            "description": "Lista de Schedulings do usuario",
+        }
+    }
+)
+def get_all_schedulings_by_user(
+    user_id: int,
+    skip: int = 0,
+    limit: int = 10,
+    scheduling_services: services = Depends(get_scheduling_services),
+) :
+    print("aaaaaaaaaaaa")
+    return scheduling_services.get_all_schedulings_by_user(skip, limit, user_id)
 
 @router.get(
     "/{scheduling_id}",

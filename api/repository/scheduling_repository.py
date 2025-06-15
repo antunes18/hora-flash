@@ -41,6 +41,15 @@ class SchedulingReposistory:
             .all()
         )
 
+    def find_all_by_user(self, skip: int, limit: int, user_id: int) -> list:
+        return (
+            self.session.query(Scheduling)
+            .filter(Scheduling.is_deleted == False, Scheduling.user_id == user_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
     def find_one_scheduling(self, id: int) -> Scheduling | None:
         return self.session.query(Scheduling).filter(Scheduling.id == id).first()
 
