@@ -9,7 +9,6 @@ from api.core.auth import Token
 from api.exceptions.user_exceptions import UserNotFound
 
 
-<<<<<<< HEAD
 class UserServices:
     def __init__(self, user_repo: UserRepository) -> None:
         self.user_repo = user_repo
@@ -18,21 +17,6 @@ class UserServices:
         existing = await self.user_repo.get_user_by_email(user.email)
         if existing:
             raise user_exceptions.UserAlreadyExist()
-=======
-def register_user(user: UserCreateDTO, db: Session):
-    existing = repository.get_user_by_email(user.email, db)
-    if existing:
-        raise user_exceptions.UserAlreadyExist()
-
-    user = User(
-        username=user.username,
-        email=user.email,
-        password=auth.hash_password(user.password),
-        role=user.role,
-        disabled=False,
-    )
-    return repository.create_user(user, db)
->>>>>>> 7729e45 (fix: error get_user_by_email)
 
         user = User(
             username=user.username,
@@ -43,15 +27,10 @@ def register_user(user: UserCreateDTO, db: Session):
         )
         return await self.user_repo.create_user(user)
 
-<<<<<<< HEAD
     def login(self, user_login: UserLoginDTO) -> Token:
         user_data: UserResponseDTO = self.user_repo.get_user_by_email(user_login.email)
         if not user_data:
             raise user_exceptions.UserNotFound()
-=======
-def login(user_login: UserLoginDTO, db: Session) -> Token:
-    user_data: UserResponseDTO = repository.get_user_by_email(user_login.email, db)
->>>>>>> 7729e45 (fix: error get_user_by_email)
 
         if auth.verify_password(user_login.password, user_data.password):
             token = auth.sign(user_data)
