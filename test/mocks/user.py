@@ -25,13 +25,11 @@ def user_service_real_repo(user_repository: UserRepository):
     """Fixture que fornece uma instância do UserService com um repositório real (para testes de integração)."""
     return UserServices(user_repo=user_repository)
 
+
 @pytest.fixture(scope="function")
 def test_user_create():
     return UserCreateDTO(
-        username="teste_de_user",
-        email="teste@teste.com",
-        username="Teste",
-        email="email@email.com",
+        email="teste111@teste.com",
         password="stringstri",
         confirm_password="stringstri",
         role=Roles.user,
@@ -104,3 +102,12 @@ def mock_list_user():
             disabled=False,
         ),
     ]
+
+
+mock_user_create = User(
+    username="teste_de_user",
+    email="teste@teste.com",
+    password="stringstri",
+    role="user",
+    disabled=False,
+)
