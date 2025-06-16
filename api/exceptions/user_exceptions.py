@@ -17,6 +17,13 @@ class UserInvalidUsername(HTTPException):
         super().__init__(status_code=400, detail=detail)
 
 
+class UserPhoneNumberAlreadyUsed(HTTPException):
+    def __init__(
+        self, detail: str = "Número de Telefone já está em Uso! Informe um Diferente"
+    ):
+        super().__init__(status_code=400, detail=detail)
+
+
 class UserNotFound(HTTPException):
     def __init__(self, detail: str = "Usuário Não Encontrado!"):
         super().__init__(status_code=404, detail=detail)

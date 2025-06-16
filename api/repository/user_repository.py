@@ -1,4 +1,5 @@
 from logging import disable
+from api.models.enums import roles
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from api.models.user import User
@@ -9,6 +10,7 @@ class UserRepository:
         self.session = session
 
     def create_user(self, user: User) -> User:
+        user.role = roles.Roles.user
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
@@ -29,6 +31,12 @@ class UserRepository:
 
     def get_user_by_email(self, email: str) -> User:
         return self.session.query(User).filter(User.email == email).first()
+
+    def get_user_by_username(self, username: str) -> User:
+        return self.session.query(User).filter(User.username == username).first()
+
+    def get_user_by_phone_number(self, phone_number: str) -> User:
+        return self.session.query(User).filter(User.number == phone_number).first()
 
     def update_user(self, db_user: User, user: User) -> User:
         for key, value in user.dict(exclude_unset=True).items():
