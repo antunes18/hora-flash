@@ -19,20 +19,7 @@ class SchedulingService:
     def create_scheduling(self, dto: scheduling_dto):
 
 
-        if (dto.hour < 8) or ( 14 > dto.hour > 12) or (dto.hour > 18):
-            raise scheduling_exceptions.InvalidData("A hora deve estar 8 e 12 ou 14 e 18!")
-
-        if dto.date < date.today() :
-            raise scheduling_exceptions.InvalidData("Não é possivel registrar para uma data anterior de hoje!")
-
-        try:
-            appointment_datetime = datetime.combine(dto.date, datetime.min.time()).replace(hour=dto.hour)
-        except TypeError:
-            raise scheduling_exceptions.InvalidData("Data ou hora inválida para o agendamento.")
-
-        if appointment_datetime < datetime.now():
-            raise scheduling_exceptions.InvalidData(
-                "Não é possível registrar um agendamento para uma data ou hora no passado.")
+        self.validate_scheduling(dto)
 
         existing = self.scheduling_repo.find_scheduling_by_date_and_hour_and_user(
             dto.date, dto.hour, dto.user_id
@@ -87,6 +74,8 @@ class SchedulingService:
     def update_scheduling(self, scheduling_id: int, scheduling_dto: scheduling_dto.Scheduling): # Parameter renamed
         existing_scheduling = self.scheduling_repo.find_one_scheduling(scheduling_id)
 
+        self.validate_scheduling(scheduling_dto)
+        
         if not existing_scheduling:
             raise scheduling_exceptions.NotFound()
 
@@ -99,3 +88,20 @@ class SchedulingService:
 
         # Call repository to save changes
         return self.scheduling_repo.update_scheduling(scheduling_id, existing_scheduling)
+
+
+    def validate_scheduling(self, dto: scheduling_dto):
+        if (dto.hour < 8) or ( 14 > dto.hour > 12) or (dto.hour > 18):
+            raise scheduling_exceptions.InvalidData("A hora deve estar 8 e 12 ou 14 e 18!")
+
+        if dto.date < date.today() :
+            raise scheduling_exceptions.InvalidData("Não é possivel registrar para uma data anterior de hoje!")
+
+        try:
+            appointment_datetime = datetime.combine(dto.date, datetime.min.time()).replace(hour=dto.hour)
+        except TypeError:
+            raise scheduling_exceptions.InvalidData("Data ou hora inválida para o agendamento.")
+
+        if appointment_datetime < datetime.now():
+            raise scheduling_exceptions.InvalidData(
+                "Não é possível registrar um agendamento para uma data ou hora no passado.")
