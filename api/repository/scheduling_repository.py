@@ -75,11 +75,11 @@ class SchedulingReposistory:
 
     def update_scheduling(self, id: int, scheduling: Scheduling) -> Scheduling | None:
         model = self.find_one_scheduling(id)
+        print(scheduling)
         if model:
-            model.hour = scheduling.hour
-            model.date = scheduling.date
-            model.name = scheduling.name
-            model.phone = scheduling.phone
+            for key, value in scheduling.dict(exclude_unset=True).items():
+                setattr(model, key, value)
+
             self.session.commit()
             self.session.refresh(model)
             return model

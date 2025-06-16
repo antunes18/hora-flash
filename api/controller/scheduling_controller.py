@@ -5,14 +5,17 @@ from sqlalchemy.orm import Session
 
 from api.core.database import get_db
 from api.exceptions.message import GenericError
+<<<<<<< HEAD
 from api.exceptions import scheduling_exceptions # Import scheduling_exceptions
 from api.models import scheduling
+=======
+>>>>>>> 46bef75 (fix: Try Update the scheduling_update)
 from api.models.enums.type import MsgReturn
 from api.repository.scheduling_repository import SchedulingReposistory
 from api.repository.user_repository import UserRepository
 from api.services import scheduling_services
 from api.services.scheduling_services import SchedulingService as services
-from api.models.dto.scheduling_dto import Scheduling
+from api.models.dto.scheduling_dto import SchedulingDTO
 
 
 router = APIRouter(prefix="/scheduling", tags=["scheduling"])
@@ -35,12 +38,12 @@ def get_scheduling_services(
 
 @router.post(
     "/",
-    response_model=Scheduling,
+    response_model=SchedulingDTO,
     response_model_exclude_unset=True,
     status_code=201,
     responses={
         201: {
-            "model": Scheduling,
+            "model": SchedulingDTO,
             "description": "Scheduling foi Criado com Sucesso!",
         },
         400: {
@@ -54,7 +57,7 @@ def get_scheduling_services(
     },
 )
 def create_Scheduling(
-    scheduling: Scheduling,
+    scheduling: SchedulingDTO,
     scheduling_services: services = Depends(get_scheduling_services),
 ):
     return scheduling_services.create_scheduling(scheduling)
@@ -62,11 +65,11 @@ def create_Scheduling(
 
 @router.get(
     "/",
-    response_model=List[Scheduling],
+    response_model=List[SchedulingDTO],
     response_model_exclude_unset=True,
     responses={
         200: {
-            "model": List[Scheduling],
+            "model": List[SchedulingDTO],
             "description": "Lista de Schedulings",
         }
     },
@@ -100,11 +103,11 @@ def get_all_schedulings_by_user(
 
 @router.get(
     "/{scheduling_id}",
-    response_model=Scheduling,
+    response_model=SchedulingDTO,
     response_model_exclude_unset=True,
     responses={
         200: {
-            "model": Scheduling,
+            "model": SchedulingDTO,
             "description": "Informações do Scheduling",
         },
         404: {
@@ -178,11 +181,11 @@ def restore_scheduling(
 
 @router.put(
     "/update/{scheduling_id}",
-    response_model=Scheduling,
+    response_model=SchedulingDTO,
     response_model_exclude_unset=True,
     responses={
         200: {
-            "model": Scheduling,
+            "model": SchedulingDTO,
             "description": "Scheduling Atualizado",
         },
         404: {
@@ -193,7 +196,7 @@ def restore_scheduling(
 )
 def update_scheduling(
     scheduling_id: int,
-    scheduling: Scheduling,
+    scheduling: SchedulingDTO,
     scheduling_services: services = Depends(get_scheduling_services),
 ):
     try:
