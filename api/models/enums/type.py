@@ -7,5 +7,6 @@ class ContentTypeEnum(str, Enum):
     video = "video"
     audio = "audio"
 
+
 class MsgReturn(str, Enum):
     msg = "msg"
