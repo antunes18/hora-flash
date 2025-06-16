@@ -17,15 +17,12 @@ class UserServices:
         if self.user_repo.get_user_by_email(user.email):
             raise user_exceptions.UserAlreadyExist()
 
-<<<<<<< HEAD
-=======
         if self.user_repo.get_user_by_username(user.username):
             raise user_exceptions.UserInvalidUsername()
 
         if self.user_repo.get_user_by_phone_number(user.number):
             raise user_exceptions.UserPhoneNumberAlreadyUsed()
 
->>>>>>> dev
         user = User(
             username=user.username,
             email=user.email,
