@@ -1,5 +1,4 @@
 import pytest
-<<<<<<< HEAD
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.models.user import User
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
@@ -8,11 +7,6 @@ from unittest.mock import AsyncMock
 
 from api.repository.user_repository import UserRepository
 from api.services.auth_services import UserServices
-
-
-@pytest.fixture
-def mock_user_repository():
-    return AsyncMock(spec=UserRepository)
 
 
 @pytest.fixture
@@ -30,23 +24,14 @@ def user_repository(db_session_for_test: AsyncSession):
 def user_service_real_repo(user_repository: UserRepository):
     """Fixture que fornece uma instância do UserService com um repositório real (para testes de integração)."""
     return UserServices(user_repo=user_repository)
-=======
-from api.models.user import User
-from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO, UserResponseDTO
-from api.models.enums.roles import Roles
->>>>>>> 2ecb84c (fix: resolve conflict)
-
 
 @pytest.fixture(scope="function")
 def test_user_create():
     return UserCreateDTO(
-<<<<<<< HEAD
         username="teste_de_user",
         email="teste@teste.com",
-=======
         username="Teste",
         email="email@email.com",
->>>>>>> 2ecb84c (fix: resolve conflict)
         password="stringstri",
         confirm_password="stringstri",
         role=Roles.user,
@@ -58,7 +43,6 @@ def test_user_login():
     return UserLoginDTO(email="email@email.com", password="stringstri")
 
 
-<<<<<<< HEAD
 @pytest.fixture
 def mock_user():
     return User(
@@ -120,12 +104,3 @@ def mock_list_user():
             disabled=False,
         ),
     ]
-=======
-mock_user_create = User(
-    username="Teste",
-    email="email@email.com",
-    password="stringstri",
-    role="user",
-    disabled=False,
-)
->>>>>>> 2ecb84c (fix: resolve conflict)

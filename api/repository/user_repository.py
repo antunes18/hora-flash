@@ -10,78 +10,50 @@ from api.models.user import User
 
 
 class UserRepository:
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session: Session) -> None:
         self.session = session
 
-    async def create_user(self, user: User) -> User:
-        await self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
+    def create_user(self, user: User) -> User:
+        self.session.add(user)
+        self.session.commit()
+        self.session.refresh(user)
         return user
 
-    async def get_all_users(self, skip: int, limit: int) -> list[User]:
+    def get_all_users(self, skip: int, limit: int) -> list[User]:
         return (
-            await self.session.query(User)
+            self.session.query(User)
             .filter(User.disabled == False)
             .offset(skip)
             .limit(limit)
             .all()
         )
 
-    async def get_user(self, user_id: int) -> User:
+    def get_user(self, user_id: int) -> User:
         return (
-            await self.session.query(User)
+            self.session.query(User)
             .filter(User.id == user_id and User.disabled == False)
             .first()
         )
 
-    async def get_user_by_email(self, email: str) -> User:
-        return await self.session.query(User).filter(User.email == email).first()
+    def get_user_by_email(self, email: str) -> User:
+        return self.session.query(User).filter(User.email == email).first()
 
-    async def update_user(self, db_user: User, user: User) -> User:
+    def update_user(self, db_user: User, user: User) -> User:
         for key, value in user.dict(exclude_unset=True).items():
             setattr(db_user, key, value)
 
-        await self.session.commit()
-        await self.session.refresh(db_user)
+        self.session.commit()
+        self.session.refresh(db_user)
         return db_user
 
-    async def disable_user(self, db_user: User) -> User:
+    def disable_user(self, db_user: User) -> User:
         db_user.disabled = True
-        await self.session.commit()
-        await self.session.refresh(db_user)
-        return await db_user
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user
 
-<<<<<<< HEAD
-    async def enable_user(self, db_user: User) -> User:
+    def enable_user(self, db_user: User) -> User:
         db_user.disabled = False
-        await self.session.commit()
-        await self.session.refresh(db_user)
-        return await db_user
-=======
-def get_user_by_username(username: str, db: Session) -> User:
-    return db.query(User).filter(User.username == username).first()
-
-
-def update_user(db_user: User, user: User, db: Session) -> User:
-    for key, value in user.dict(exclude_unset=True).items():
-        setattr(db_user, key, value)
-
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def disable_user(db_user: User, db: Session) -> User:
-    db_user.disabled = True
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def enable_user(db_user: User, db: Session) -> User:
-    db_user.disabled = False
-    db.commit()
-    db.refresh(db_user)
-    return db_user
->>>>>>> f62dcc5 (fix: error username already in use)
+        self.session.commit()
+        self.session.refresh(db_user)
+        return db_user
