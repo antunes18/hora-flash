@@ -51,18 +51,10 @@ class UserServices:
         return self.user_repo.get_all_users(skip, limit)
 
     def get_user(self, user_id: int):
-        user = self.user_repo.get_user(user_id)
-        if not user:
-            raise user_exceptions.UserNotFound()
-
-        return user
+        return self.user_repo.get_user(user_id)
 
     def get_user_by_email(self, email: str):
-        user = self.user_repo.get_user_by_email(email)
-        if not user:
-            raise user_exceptions.UserNotFound()
-
-        return user
+        return self.user_repo.get_user_by_email(email)
 
     def update_user(self, user_id: int, update_user: User):
         user = self.user_repo.get_user(user_id)

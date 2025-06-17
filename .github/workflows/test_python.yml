@@ -2,7 +2,11 @@ name: Docker Image CI
 
 on:
   push:
+<<<<<<< HEAD
     branches: [ "dev" ]
+=======
+    branches: [ "disable" ]
+>>>>>>> main
 
 jobs:
 

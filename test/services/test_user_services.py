@@ -1,64 +1,63 @@
 from logging import disable
-from unittest.mock import AsyncMock
+from unittest.mock import Mock
 from fastapi import responses
-import pytest
+from api.models.user import User
 from api.models.dto.user_dto import UserCreateDTO, UserLoginDTO
 from api.services.auth_services import UserServices
-from api.models.user import User
 
 from test.mocks.user import (
-    UserResponseDTO,
-    mock_user,
-    mock_list_user,
+    mock_user_create,
     mock_user_repository,
     mock_user_service,
-    mock_user_update,
     test_user_create,
+    mock_user,
+    mock_list_user,
+    mock_user_update,
 )
 
 
 class TestUserServices:
-    @pytest.mark.asyncio
-    async def test_register_user(
+    def test_register_user(
         self,
-        test_user_create: UserCreateDTO,
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
         mock_user: User,
     ):
         mock_user_repository.get_user_by_email.return_value = None
+        mock_user_repository.get_user_by_username.return_value = None
+        mock_user_repository.get_user_by_phone_number.return_value = None
         mock_user_repository.create_user.return_value = mock_user
-        response = await mock_user_service.register_user(test_user_create)
+
+        response = mock_user_service.register_user(mock_user)
 
         assert response is not None
-        assert response.email == test_user_create.email
-        assert response.username == test_user_create.username
-        assert response.role == test_user_create.role
+        assert response.email == "teste@teste.com"
+        assert response.username == "teste_de_user"
+        assert response.number == "1234567891234"
+        assert response.role == "user"
         assert response.disabled == False
 
-    @pytest.mark.asyncio
-    async def test_get_all(
+    def test_get_all(
         self,
         mock_list_user: list[User],
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
     ):
         mock_user_repository.get_all_users.return_value = mock_list_user
-        response = await mock_user_service.get_all(skip=0, limit=100)
+        response = mock_user_service.get_all(skip=0, limit=100)
         assert response is not None
         assert len(response) == len(mock_list_user)
         assert response == mock_list_user
 
-    @pytest.mark.asyncio
-    async def test_get_user(
+    def test_get_user(
         self,
         mock_user: User,
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
     ):
         mock_user_repository.get_user.return_value = mock_user
 
-        response = await mock_user_service.get_user(user_id=1)
+        response = mock_user_service.get_user(user_id=1)
 
         assert response is not None
 
@@ -67,46 +66,41 @@ class TestUserServices:
         assert response.role == mock_user.role
         assert response.disabled == mock_user.disabled
 
-    @pytest.mark.asyncio
-    async def test_get_user_by_email(
+    def test_get_user_by_email(
         self,
         mock_user: User,
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
     ):
         mock_user_repository.get_user_by_email.return_value = mock_user
 
-        response = await mock_user_service.get_user_by_email("teste@teste.com")
+        response = mock_user_service.get_user_by_email("teste@teste.com")
 
         assert response is not None
+        assert response.email == "teste@teste.com"
 
-        assert response.email == mock_user.email
-        assert response.username == mock_user.username
-        assert response.role == mock_user.role
-        assert response.disabled == mock_user.disabled
-
-    @pytest.mark.asyncio
-    async def test_update_user(
+    def test_update_user(
         self,
         mock_user: User,
         mock_user_update: User,
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
     ):
         mock_user_repository.get_user.return_value = mock_user
+        mock_user_repository.get_user_by_username.return_value = None
+        mock_user_repository.get_user_by_phone_number.return_value = None
         mock_user_repository.update_user.return_value = mock_user_update
 
-        response = await mock_user_service.update_user(1, mock_user_update)
+        response = mock_user_service.update_user(1, mock_user_update)
 
         assert response is not None
         assert response == mock_user_update
 
-    @pytest.mark.asyncio
-    async def test_delete_user(
+    def test_delete_user(
         self,
         mock_user: User,
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
     ):
         mock_user_repository.get_user.return_value = mock_user
 
@@ -114,17 +108,16 @@ class TestUserServices:
         disabled_user.disabled = True
 
         mock_user_repository.disable_user.return_value = disabled_user
-        response = await mock_user_service.delete_user(1)
+        response = mock_user_service.delete_user(1)
 
         assert response is not None
         assert response.disabled is True
 
-    @pytest.mark.asyncio
-    async def test_restore_user(
+    def test_restore_user(
         self,
         mock_user: User,
         mock_user_service: UserServices,
-        mock_user_repository: AsyncMock,
+        mock_user_repository: Mock,
     ):
         mock_user_repository.get_user.return_value = mock_user
 
@@ -133,7 +126,7 @@ class TestUserServices:
 
         mock_user_repository.enable_user.return_value = restored_user
 
-        response = await mock_user_service.restore_user(1)
+        response = mock_user_service.restore_user(1)
 
         assert response is not None
         assert response.disabled is False
