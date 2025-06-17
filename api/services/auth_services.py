@@ -34,8 +34,6 @@ class UserServices:
 
     def login(self, user_login: UserLoginDTO) -> Token:
         user_data: UserResponseDTO = self.user_repo.get_user_by_email(user_login.email)
-        print(user_data.email)
-        print(user_data.username)
 
         if not user_data:
             raise user_exceptions.UserNotFound()
