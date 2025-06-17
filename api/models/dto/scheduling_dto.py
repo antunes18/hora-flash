@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 
 class Scheduling(BaseModel):
-    date: date
+    date: datetime
     hour: int
     name: str
     user_id: int
@@ -19,7 +19,7 @@ class Scheduling(BaseModel):
 
     @field_validator("date")
     def validate_date(cls, value):
-        if value >= date.today():
+        if value >= datetime.today():
             return value
         raise scheduling_exceptions.InvalidData(
             "Não é possivel registrar para uma data anterior de hoje!"

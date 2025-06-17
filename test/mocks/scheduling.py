@@ -53,7 +53,7 @@ def real_scheduling_services(
 def mock_scheduling(mock_user):
     return Scheduling(
         hour=12,
-        date=datetime.datetime(2030, 6, 16),
+        date=datetime.datetime(2030, 6, 16, 0, 0),
         name="test",
         phone=1234567891234,
         user_id=1,
@@ -77,11 +77,7 @@ def mock_scheduling_create():
 def mock_scheduling_update():
     return scheduling_dto.Scheduling(
         hour=16,
-        date=datetime.datetime(
-            2040,
-            5,
-            10,
-        ),
+        date=datetime.datetime(2040, 5, 10, 0, 0),
         name="test",
         phone="1234567891234",
         user_id=1,
